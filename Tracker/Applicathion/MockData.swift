@@ -16,7 +16,7 @@ class MockData {
             Tracker(id: UUID(), name: "Полить цветы", color: .color5, emoji: "🌸", schedule: [.wednesday, .saturday])
         ]),
         TrackerCategory(name: "Тренировки", trackers: [
-            Tracker(id: UUID(), name: "Зарядка", color: .color6, emoji: "🤸‍♂️", schedule: [.monday, .wednesday, .friday]),
+            Tracker(id: UUID(), name: "Зарядка", color: .color6, emoji: "🤸‍♂️", schedule: []),
             Tracker(id: UUID(), name: "Бассейн", color: .color15, emoji: "🏊‍♀️", schedule: [.tuesday, .thursday, .saturday]),
             Tracker(id: UUID(), name: "Бег", color: .color9, emoji: "🏃‍♂️", schedule: [.wednesday, .saturday])
     ])

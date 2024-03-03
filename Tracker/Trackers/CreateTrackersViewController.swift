@@ -54,8 +54,8 @@ class ButtonMakeTreaker: UIButton {
 }
 
 class CreateTrackersViewController: UIViewController {
-    
-    public weak var delegate: CreateTrackerVCDelegate?
+ 
+    public weak var delegate: CreateEventVCDelegate?
     
     let stackButtons = UIStackView()
     let labelMaking = LabelMakeTreaker()
@@ -122,17 +122,20 @@ class CreateTrackersViewController: UIViewController {
  
     }
     
-    @objc private func irregularEventButtonAction() {
-        let createRegularEventVC = CreateEventViewController(.irregular)
-        createRegularEventVC.delegate = self
-        present(createRegularEventVC, animated: true)
-    }
     
     @objc private func regularEventButtonAction() {
         let createRegularEventVC = CreateEventViewController(.regular)
         createRegularEventVC.delegate = self
         present(createRegularEventVC, animated: true)
     }
+    
+    @objc private func irregularEventButtonAction() {
+        let createNotRegularEventVC = CreateEventViewController(.irregular)
+        createNotRegularEventVC.delegate = self
+        present(createNotRegularEventVC, animated: true)
+    }
+    
+   
 }
 
 extension CreateTrackersViewController: CreateEventVCDelegate {

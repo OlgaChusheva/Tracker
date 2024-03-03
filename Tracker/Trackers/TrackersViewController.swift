@@ -7,10 +7,14 @@
 
 import UIKit
 
+//protocol TrackersCollectionViewCellDelegate: AnyObject {
+//    func completedTracker(id: UUID)
+//}
+
 class TrackersViewController: UIViewController {
     
-    //  private var categories: [TrackerCategory] = [] //список категорий и вложенных в них трекеров
-    private var categories: [TrackerCategory] = MockData.categories
+      private var categories: [TrackerCategory] = [] //список категорий и вложенных в них трекеров
+//    private var categories: [TrackerCategory] = MockData.categories
     private var completedTrackers: [TrackerRecord] = [] //трекеры, которые были «выполнены» в выбранную дату
     private var visibleCategories: [TrackerCategory] = [] //отображается при поиске и/или изменении дня недели
     private var currentDate: Int?
@@ -46,10 +50,11 @@ class TrackersViewController: UIViewController {
         searchTextField.placeholder = "Поиск"
         searchTextField.textColor = .ypBlack
         searchTextField.font = .systemFont(ofSize: 17)
-        searchTextField.backgroundColor = .ypLightGray
+        searchTextField.backgroundColor = .ypGrayFind
         searchTextField.layer.cornerRadius = 10
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
         searchTextField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
+        
         searchTextField.delegate = self
         return searchTextField
     }()
@@ -79,7 +84,7 @@ class TrackersViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         setDayOfWeek()
-        updateCategories()
+    //    updateCategories()
         makeNavBar()
         addSubviews()
         setupLayoutsearchTextFieldAndButton()
@@ -95,6 +100,7 @@ class TrackersViewController: UIViewController {
             navBar.topItem?.setLeftBarButton(leftButton, animated: false)
             datePicker.preferredDatePickerStyle = .compact
             datePicker.datePickerMode = .date
+            datePicker.backgroundColor = .ypGrayDate
             datePicker.tintColor = .blueYP
             datePicker.locale = Locale(identifier: "ru_RU")
             datePicker.accessibilityLabel = dateFormatter.string(from: datePicker.date)
@@ -111,7 +117,7 @@ class TrackersViewController: UIViewController {
         if let day = components.weekday {
             currentDate = day
             updateCategories()
-        }
+        } 
     }
     
     @objc func addTracker() {
@@ -180,18 +186,37 @@ class TrackersViewController: UIViewController {
         var newCategories: [TrackerCategory] = []
         for category in categories {
             var newTrackers: [Tracker] = []
+//var newEvents: [TrackerRecord] = []
             for tracker in category.trackers {
                 guard let schedule = tracker.schedule else { return }
-                let scheduleInts = schedule.map { $0.numberOfDay }
+                var scheduleInts = schedule.map { $0.numberOfDay }
                 if let day = currentDate, scheduleInts.contains(day) &&  (searchText.isEmpty || tracker.name.contains(searchText)) {
                     newTrackers.append(tracker)
                 }
-            }
+                if  scheduleInts == [] {
+//                    let events = tracker
+//                    let event = TrackerRecord(id: tracker.id, date: Date())
+//                   
+//                    completedTrackers.append(event)
+//                    print (completedTrackers)
+//                    collectionView.reloadData()
+                    
+                    newTrackers.append(tracker)
+                    
+                }
+  
+                }
+                
+            
             if newTrackers.count > 0 {
                 let newCategory = TrackerCategory(name: category.name, trackers: newTrackers)
                 newCategories.append(newCategory)
             }
+            
+     
+            
         }
+
         visibleCategories = newCategories
         collectionView.reloadData()
     }
@@ -213,6 +238,18 @@ extension TrackersViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersCollectionViewCell.identifier, for: indexPath) as? TrackersCollectionViewCell else { return UICollectionViewCell() }
         cell.delegate = self
         let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
+       
+        
+//        if tracker.schedule == []  {
+//            
+//            let events = tracker
+//            let event = TrackerRecord(id: tracker.id, date: Date())
+//           
+//            completedTrackers.append(event)
+//            print (completedTrackers)
+//            collectionView.reloadData()
+//        }
+        
         let isCompleted = completedTrackers.contains(where: { record in
             record.id == tracker.id &&
             record.date.yearMonthDayComponents == datePicker.date.yearMonthDayComponents
@@ -221,6 +258,8 @@ extension TrackersViewController: UICollectionViewDataSource {
         let completedCount = completedTrackers.filter({ record in
             record.id == tracker.id
         }).count
+ 
+      
         cell.configure(
             tracker.id,
             name: tracker.name,
@@ -247,23 +286,19 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        return CGSize(width: 167, height: 148)
+        return CGSize(width: collectionView.bounds.width / 2, height: 148)
     }
     
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        minimumLineSpacingForSectionAt section: Int
-    ) -> CGFloat {
-        return 10
-    }
+
+    
+  
     
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
         minimumInteritemSpacingForSectionAt section: Int
     ) -> CGFloat {
-        return 10
+        return 0
     }
     
     func collectionView(
@@ -298,7 +333,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension TrackersViewController: CreateTrackerVCDelegate {
+extension TrackersViewController: CreateEventVCDelegate {
     
     func createTracker(_ tracker: Tracker, categoryName: String) {
         var categoryToUpdate: TrackerCategory?
@@ -320,6 +355,8 @@ extension TrackersViewController: CreateTrackerVCDelegate {
         visibleCategories = categories
         updateCategories()
         collectionView.reloadData()
+        dismiss(animated: true)
+        
     }
 }
 
@@ -329,8 +366,20 @@ extension TrackersViewController {
         searchText = searchTextField.text ?? ""
         widthAnchor?.constant = 85
         updateCategories()
+        
+            let removeTheKeyboard = UITapGestureRecognizer(target: self,
+                                                    action: #selector(hideKeyboard))
+        removeTheKeyboard.cancelsTouchesInView = false
+            self.view.addGestureRecognizer(removeTheKeyboard)
+        }
+        
+        
+        @objc
+        private func hideKeyboard() {
+            self.view.endEditing(true)
+        }
     }
-}
+
 
 extension TrackersViewController: TrackersCollectionViewCellDelegate {
     

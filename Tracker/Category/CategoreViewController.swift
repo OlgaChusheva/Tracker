@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CategoryVC: UIViewController {
+class CategoreViewController: UIViewController {
     
     private lazy var titleVC: UILabel = {
         let label = UILabel()
@@ -53,7 +53,7 @@ class CategoryVC: UIViewController {
         var height = 75
         tableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.identifier)
         tableView.layer.cornerRadius = 16
-        tableView.separatorColor = .ypGray
+   //     tableView.separatorColor = .ypGray
         tableView.backgroundColor = .backgroundColor
         tableView.frame = CGRect(x: 16, y: 79, width: Int(width), height: height)
         tableView.dataSource = self
@@ -106,7 +106,7 @@ class CategoryVC: UIViewController {
     }
 }
 
-extension CategoryVC: UITableViewDataSource {
+extension CategoreViewController: UITableViewDataSource {
     func tableView(
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
@@ -134,7 +134,7 @@ extension CategoryVC: UITableViewDataSource {
     }
 }
 
-extension CategoryVC: UITableViewDelegate {
+extension CategoreViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
     }

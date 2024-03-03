@@ -53,6 +53,8 @@ enum WeekDay: String, CaseIterable {
             return 7
         case .sunday:
             return 1
+            
+            
         }
     }
 }

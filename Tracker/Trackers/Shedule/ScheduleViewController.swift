@@ -4,6 +4,7 @@
 //  Created by Ольга Чушева on 18.02.2024.
 //
 
+
 import UIKit
 
 protocol ScheduleVCDelegate: AnyObject {
@@ -94,6 +95,7 @@ extension ScheduleViewController: UITableViewDataSource {
         weekDayCell.contentView.backgroundColor = .backgroundColor
         weekDayCell.label.text = WeekDay.allCases[indexPath.row].rawValue
         weekDayCell.weekDay = WeekDay.allCases[indexPath.row]
+        weekDayCell.selectionStyle = .none
         if indexPath.row == 6 {
             weekDayCell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         } else {
@@ -125,4 +127,4 @@ extension ScheduleViewController: WeekDayTableViewCellDelegate {
     }
 }
 
-// new 
+
