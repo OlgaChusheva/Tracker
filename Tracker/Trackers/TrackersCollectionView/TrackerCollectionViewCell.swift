@@ -44,9 +44,10 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     
     private lazy var trackerNameLabel: UILabel = {
         let trackerNameLabel = UILabel()
-        trackerNameLabel.font = .systemFont(ofSize: 12)
+        trackerNameLabel.font = .systemFont(ofSize: 12, weight: .medium)
         trackerNameLabel.numberOfLines = 2
         trackerNameLabel.text = "Название трекера "
+        trackerNameLabel.textColor = .white
         trackerNameLabel.translatesAutoresizingMaskIntoConstraints = false
         return trackerNameLabel
     }()
@@ -54,6 +55,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     private lazy var resultLabel: UILabel = {
         let resultLabel = UILabel()
         resultLabel.text = "0 дней"
+        resultLabel.font = .systemFont(ofSize: 12, weight: .medium)
         resultLabel.translatesAutoresizingMaskIntoConstraints = false
         return resultLabel
     }()
@@ -62,11 +64,16 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         let checkButton = UIButton()
         checkButton.setImage(UIImage(named: "plus"), for: .normal)
         checkButton.addTarget(self, action: #selector(didTapCheckButton), for: .touchUpInside)
+        checkButton.backgroundColor?.withAlphaComponent(1)
+     
         checkButton.tintColor = .white
-        checkButton.layer.cornerRadius = 17
+        checkButton.layer.cornerRadius = 20
         checkButton.translatesAutoresizingMaskIntoConstraints = false
         return checkButton
     }()
+    
+    
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -77,6 +84,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         trackerView.addSubview(trackerNameLabel)
         contentView.addSubview(resultLabel)
         contentView.addSubview(checkButton)
+
         
         NSLayoutConstraint.activate([
             
@@ -98,10 +106,14 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
             trackerNameLabel.leadingAnchor.constraint(equalTo: trackerView.leadingAnchor, constant: 12),
             trackerNameLabel.heightAnchor.constraint(equalToConstant: 34),
             
+            
             checkButton.topAnchor.constraint(equalTo: trackerView.bottomAnchor, constant: 8),
             checkButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            checkButton.heightAnchor.constraint(equalToConstant: 34),
-            checkButton.widthAnchor.constraint(equalToConstant: 34 ),
+            checkButton.heightAnchor.constraint(equalToConstant: 40),
+            checkButton.widthAnchor.constraint(equalToConstant: 40 ),
+            
+//            checkButtonView.centerYAnchor.constraint(equalTo: checkButton.centerYAnchor) ,
+//            checkButtonView.centerYAnchor.constraint(equalTo: checkButton.centerYAnchor),
             
             resultLabel.centerYAnchor.constraint(equalTo: checkButton.centerYAnchor),
             resultLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12)
@@ -119,6 +131,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
             return
         }
         delegate?.completedTracker(id: id)
+        
     }
     
     func configure(
@@ -138,10 +151,18 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         trackerId = id
         trackerNameLabel.text = name
         trackerView.backgroundColor = color
-        checkButton.backgroundColor = color
+   
+
+        
         emojiLabel.text = emoji
         isCompletedToday = isCompleted
         checkButton.setImage(isCompletedToday ? UIImage(systemName: "checkmark")! : UIImage(systemName: "plus")!, for: .normal)
+        
+        checkButton.backgroundColor = (isCompletedToday ? color.withAlphaComponent(0.5)  : color.withAlphaComponent(1))
+        
+       
+       
+        
         checkButton.isEnabled = isEnabled
         
         if completedCount == 0 {

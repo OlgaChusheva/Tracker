@@ -25,6 +25,9 @@ protocol CreateEventVCDelegate: AnyObject {
     func createTracker(_ tracker: Tracker, categoryName: String)
 }
 
+
+
+
 class CreateEventViewController: UIViewController {
     
     private let event: Event
@@ -36,6 +39,7 @@ class CreateEventViewController: UIViewController {
     private var scheduleSubTitle: String = ""
     private var dayOfWeek: [String] = []
     public weak var delegate: CreateEventVCDelegate?
+
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -64,6 +68,7 @@ class CreateEventViewController: UIViewController {
         textField.indent(size: 10)
         textField.placeholder = "Введите название трекера"
         textField.textColor = .ypBlack
+        textField.tintColor = .ypBlue
         textField.backgroundColor = .backgroundColor
         textField.layer.cornerRadius = 16
         textField.font = .systemFont(ofSize: 17)
@@ -188,9 +193,18 @@ class CreateEventViewController: UIViewController {
     }
     
     @objc func createEventButtonAction() {
-        let tracker = Tracker(id: UUID(), name: textField.text ?? "", color: .yellow, emoji: "🙂", schedule: schedule)
-        delegate?.createTracker(tracker, categoryName: "Важное")
+        
+        createEventView.backgroundColor = .ypBlack
+        
+    
+            
+            let tracker = Tracker(id: UUID(), name: textField.text ?? "", color: .color15, emoji: "🙂", schedule: schedule)
+        
+            delegate?.createTracker(tracker, categoryName: "Важное")
+        
+
         dismiss(animated: true)
+        
     }
     
     @objc private func cancelButtonAction() {
@@ -198,7 +212,7 @@ class CreateEventViewController: UIViewController {
     }
     
     @objc private func categoryButtonAction() {
-        let categoryVC = CategoryVC()
+        let categoryVC = CategoreViewController()
         present(categoryVC, animated: true)
     }
     
@@ -319,8 +333,21 @@ class CreateEventViewController: UIViewController {
             errorLabel.text = "Ограничение 38 символов"
             heightAnchor?.constant = 32
         }
+        let removeTheKeyboard = UITapGestureRecognizer(target: self,
+                                                action: #selector(hideKeyboard))
+    removeTheKeyboard.cancelsTouchesInView = false
+        self.view.addGestureRecognizer(removeTheKeyboard)
+    }
+    
+    
+    @objc
+    private func hideKeyboard() {
+        self.view.endEditing(true)
     }
 }
+        
+    
+
 
 extension UITextField {
     
