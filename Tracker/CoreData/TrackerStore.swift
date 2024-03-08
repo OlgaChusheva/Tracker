@@ -13,7 +13,7 @@ class TrackerStore {
     private let context: NSManagedObjectContext
     
     convenience init() {
-        let context = DatabaseManager.shared.context
+        let context = CoreDataBase.shared.context
         self.init(context: context)
     }
     

@@ -14,7 +14,7 @@ class TrackerRecordStore {
     static let shared = TrackerRecordStore()
     
     convenience init() {
-        let context = DatabaseManager.shared.context
+        let context = CoreDataBase.shared.context
         self.init(context: context)
     }
     

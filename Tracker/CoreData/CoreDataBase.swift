@@ -12,9 +12,9 @@ enum DatabaseError: Error {
     case someError
 }
 
-final class DatabaseManager {
+final class CoreDataBase {
     
-    private let modelName = "Core Data"
+    private let modelName = "Tracker"
     var context: NSManagedObjectContext {
         persistentContainer.viewContext
     }
@@ -23,7 +23,7 @@ final class DatabaseManager {
         _ = persistentContainer
     }
     
-    static let shared = DatabaseManager()
+    static let shared = CoreDataBase()
     
     // MARK: - Core Data stack
 

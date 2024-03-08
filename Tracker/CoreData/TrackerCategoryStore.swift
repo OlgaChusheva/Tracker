@@ -43,7 +43,7 @@ class TrackerCategoryStore: NSObject {
     private var movedIndexes: Set<TrackerCategoryStoreUpdate.Move>?
     
     convenience override init() {
-        let context = DatabaseManager.shared.context
+        let context = CoreDataBase.shared.context
         try! self.init(context: context)
     }
     
