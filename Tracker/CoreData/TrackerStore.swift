@@ -8,7 +8,8 @@
 import Foundation
 import CoreData
 
-class TrackerStore {
+
+final class TrackerStore {
     
     private let context: NSManagedObjectContext
     
@@ -21,13 +22,13 @@ class TrackerStore {
         self.context = context
     }
     
-    func addNewTracker(_ tracker: Tracker) throws {
+    private func addNewTracker(_ tracker: Tracker) throws {
         let trackerCoreData = TrackerCoreData(context: context)
         updateExistingTracker(trackerCoreData, with: tracker)
         try context.save()
     }
     
-    func updateExistingTracker(_ trackerCoreData: TrackerCoreData, with tracker: Tracker) {
+    private func updateExistingTracker(_ trackerCoreData: TrackerCoreData, with tracker: Tracker) {
         trackerCoreData.nameTracker = tracker.name
         trackerCoreData.id = tracker.id
         trackerCoreData.emoji = tracker.emoji
@@ -35,13 +36,13 @@ class TrackerStore {
         trackerCoreData.color = tracker.color?.hexString
     }
     
-    func fetchTrackers() throws -> [Tracker] {
+    private func fetchTrackers() throws -> [Tracker] {
         let fetchRequest = TrackerCoreData.fetchRequest()
         let trackersFromCoreData = try context.fetch(fetchRequest)
         return try trackersFromCoreData.map { try self.tracker(from: $0) }
     }
     
-    func tracker(from data: TrackerCoreData) throws -> Tracker {
+    private func tracker(from data: TrackerCoreData) throws -> Tracker {
         guard let name = data.nameTracker else {
             throw DatabaseError.someError
         }

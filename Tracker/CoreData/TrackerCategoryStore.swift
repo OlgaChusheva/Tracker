@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 
+
 enum TrackerCategoryStoreError: Error {
     case decodingErrorInvalidName
 }
@@ -30,12 +31,12 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
     )
 }
 
-class TrackerCategoryStore: NSObject {
+final class TrackerCategoryStore: NSObject {
     
     static let shared = TrackerCategoryStore()
     private let trackerStore = TrackerStore()
     private let context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>!
+//    private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>!
     weak var delegate: TrackerCategoryStoreDelegate?
     private var insertedIndexes: IndexSet?
     private var deletedIndexes: IndexSet?
@@ -44,10 +45,16 @@ class TrackerCategoryStore: NSObject {
     
     convenience override init() {
         let context = CoreDataBase.shared.context
-        try! self.init(context: context)
+        self.init(context: context)
+    }
+
+    init(context: NSManagedObjectContext)  {
+        self.context = context
+     //   super.init()
+        
     }
     
-    var trackerCategories: [TrackerCategory] {
+     var trackerCategories: [TrackerCategory] {
         guard
             let objects = self.fetchedResultsController.fetchedObjects,
             let trackerCategories = try? objects.map({ try self.trackerCategory(from: $0)})
@@ -55,11 +62,8 @@ class TrackerCategoryStore: NSObject {
         return trackerCategories
     }
     
-    init(context: NSManagedObjectContext) throws {
-        self.context = context
-        super.init()
-        
-        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
+    private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
+        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(keyPath: \TrackerCategoryCoreData.nameCategory, ascending: true)
         ]
@@ -70,17 +74,26 @@ class TrackerCategoryStore: NSObject {
             cacheName: nil
         )
         controller.delegate = self
-        self.fetchedResultsController = controller
-        try controller.performFetch()
-    }
+     
+        try? controller.performFetch()
+        
+        return controller
+    }()
     
-    func addNewTrackerCategory(_ trackerCategory: TrackerCategory) throws {
+
+    
+    
+   
+    
+    
+    
+     func addNewTrackerCategory(_ trackerCategory: TrackerCategory) throws {
         let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
         updateExistingTrackerCategory(trackerCategoryCoreData, with: trackerCategory)
         try context.save()
     }
     
-    func updateExistingTrackerCategory(
+    private func updateExistingTrackerCategory(
         _ trackerCategoryCoreData: TrackerCategoryCoreData,
         with category: TrackerCategory)
     {
@@ -96,7 +109,7 @@ class TrackerCategoryStore: NSObject {
         }
     }
     
-    func addTracker(_ tracker: Tracker, to trackerCategory: TrackerCategory) throws {
+     func addTracker(_ tracker: Tracker, to trackerCategory: TrackerCategory) throws {
         let category = fetchedResultsController.fetchedObjects?.first {
             $0.nameCategory == trackerCategory.name
         }
@@ -111,7 +124,7 @@ class TrackerCategoryStore: NSObject {
         try context.save()
     }
     
-    func trackerCategory(from data: TrackerCategoryCoreData) throws -> TrackerCategory {
+    private func trackerCategory(from data: TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let name = data.nameCategory else {
             throw TrackerCategoryStoreError.decodingErrorInvalidName
         }
@@ -138,7 +151,7 @@ class TrackerCategoryStore: NSObject {
 
 extension TrackerCategoryStore {
     
-    func predicateFetch(nameTracker: String) -> [TrackerCategory] {
+     func predicateFetch(nameTracker: String) -> [TrackerCategory] {
         if nameTracker.isEmpty {
             return trackerCategories
         } else {
@@ -155,7 +168,7 @@ extension TrackerCategoryStore {
 
 extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     
-    func controllerWillChangeContent(
+     func controllerWillChangeContent(
         _ controller: NSFetchedResultsController<NSFetchRequestResult>)
     {
         insertedIndexes = IndexSet()
@@ -165,24 +178,31 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(
-        _ controller: NSFetchedResultsController<NSFetchRequestResult>)
-    {
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        
+            guard
+            let insertedIndexes,
+            let deletedIndexes,
+            let updatedIndexes,
+            let movedIndexes
+        else { return }
+            
         delegate?.store(
             self,
             didUpdate: TrackerCategoryStoreUpdate(
-                insertedIndexes: insertedIndexes!,
-                deletedIndexes: deletedIndexes!,
-                updatedIndexes: updatedIndexes!,
-                movedIndexes: movedIndexes!
+                insertedIndexes: insertedIndexes,
+                deletedIndexes: deletedIndexes,
+                updatedIndexes: updatedIndexes,
+                movedIndexes: movedIndexes
             )
         )
-        insertedIndexes = nil
-        deletedIndexes = nil
-        updatedIndexes = nil
-        movedIndexes = nil
+        self.insertedIndexes = nil
+        self.deletedIndexes = nil
+        self.updatedIndexes = nil
+        self.movedIndexes = nil
     }
     
-    func controller(
+     func controller(
         _ controller: NSFetchedResultsController<NSFetchRequestResult>,
         didChange anObject: Any,
         at indexPath: IndexPath?,

@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class TrackerRecordStore {
+final class TrackerRecordStore {
     
     private let context: NSManagedObjectContext
     static let shared = TrackerRecordStore()
@@ -22,29 +22,37 @@ class TrackerRecordStore {
         self.context = context
     }
     
-    func addNewTrackerRecord(_ trackerRecord: TrackerRecord) throws {
+     func addNewTrackerRecord(_ trackerRecord: TrackerRecord) throws {
         let trackerRecordCoreData = TrackerRecordCoreData(context: context)
         updateExistingTrackerRecord(trackerRecordCoreData, with: trackerRecord)
         try context.save()
     }
     
     func deleteTrackerRecord(_ trackerRecord: TrackerRecord) throws {
-        let trackerRecordCoreData = TrackerRecordCoreData(context: context)
-        updateExistingTrackerRecord(trackerRecordCoreData, with: trackerRecord)
+//        let trackerRecordCoreData = TrackerRecordCoreData(context: context)
+//        updateExistingTrackerRecord(trackerRecordCoreData, with: trackerRecord)
+        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        request.predicate = NSPredicate(format: "id == %@ AND date == %@", trackerRecord.id as CVarArg, trackerRecord.date as CVarArg)
+
+        if let existingRecord = try context.fetch(request).first {
+            context.delete(existingRecord)
+            try context.save()
+        }
+        
     }
     
-    func updateExistingTrackerRecord(_ trackerRecordCoreData: TrackerRecordCoreData, with record: TrackerRecord) {
+    private func updateExistingTrackerRecord(_ trackerRecordCoreData: TrackerRecordCoreData, with record: TrackerRecord) {
         trackerRecordCoreData.idTracker = record.id
         trackerRecordCoreData.date = record.date
     }
     
-    func fetchTrackerRecord() throws -> [TrackerRecord] {
+     func fetchTrackerRecord() throws -> [TrackerRecord] {
         let fetchRequest = TrackerRecordCoreData.fetchRequest()
         let trackerRecordFromCoreData = try context.fetch(fetchRequest)
         return try trackerRecordFromCoreData.map { try self.trackerRecord(from: $0) }
     }
     
-    func trackerRecord(from data: TrackerRecordCoreData) throws -> TrackerRecord {
+    private func trackerRecord(from data: TrackerRecordCoreData) throws -> TrackerRecord {
         guard let id = data.idTracker else {
             throw DatabaseError.someError
         }

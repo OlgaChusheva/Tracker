@@ -64,15 +64,25 @@ class CreateEventViewController: UIViewController {
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.backgroundColor = .white
-        scrollView.frame = view.bounds
-        scrollView.contentSize = contentSize
+//        scrollView.frame = view.bounds
+//        scrollView.contentSize = contentSize
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
     
-    private var contentSize: CGSize {
-        CGSize(width: view.frame.width, height: view.frame.height + 400)
-    }
+//    private var contentSize: CGSize {
+//        CGSize(width: view.frame.width, height: view.frame.height + 400)
+//    }
+    
+    let scrollViewContainer: UIStackView = {
+          let view = UIStackView()
+
+          view.axis = .vertical
+          view.spacing = 0
+
+          view.translatesAutoresizingMaskIntoConstraints = false
+          return view
+      }()
     
     private lazy var label: UILabel = {
         let label = UILabel()
@@ -90,6 +100,7 @@ class CreateEventViewController: UIViewController {
         textField.placeholder = "Введите название трекера"
         textField.textColor = .ypBlack
         textField.backgroundColor = .backgroundColor
+        textField.tintColor = .ypBlue
         textField.layer.cornerRadius = 16
         textField.font = .systemFont(ofSize: 17)
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -97,6 +108,14 @@ class CreateEventViewController: UIViewController {
         UITextField.appearance().clearButtonMode = .whileEditing
         textField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
         return textField
+    }()
+    
+    private lazy var tapGesture: UITapGestureRecognizer = {
+    let tapGesture = UITapGestureRecognizer()
+    tapGesture.addTarget(self, action: #selector(hideKeyboard))
+    tapGesture.cancelsTouchesInView = false
+    
+        return tapGesture
     }()
     
     private lazy var errorLabel: UILabel = {
@@ -196,7 +215,7 @@ class CreateEventViewController: UIViewController {
     private lazy var createEventButton: UIButton = {
         let button = UIButton()
         button.setTitle("Создать", for: .normal)
-        button.backgroundColor = .gray
+        button.backgroundColor = .ypGray
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(createEventButtonAction), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -243,7 +262,7 @@ class CreateEventViewController: UIViewController {
         if createEventButton.isEnabled {
             createEventButton.backgroundColor = .ypBlack
         } else {
-            createEventButton.backgroundColor = .gray
+            createEventButton.backgroundColor = .ypGray
         }
     }
     
@@ -269,11 +288,17 @@ class CreateEventViewController: UIViewController {
     }
     
     private func addSubviews() {
+        updateScheduleButton()
+        
+        view.addSubview(label)
         view.addSubview(scrollView)
-        scrollView.addSubview(label)
-        scrollView.addSubview(textField)
-        scrollView.addSubview(errorLabel)
-        scrollView.addSubview(createEventView)
+        scrollView.addSubview(scrollViewContainer)
+     //   scrollViewContainer.addArrangedSubview(label)
+        scrollViewContainer.addArrangedSubview(textField)
+        scrollViewContainer.addArrangedSubview(errorLabel)
+        scrollViewContainer.addArrangedSubview(createEventView)
+        scrollViewContainer.addArrangedSubview(emojiAndColorCollectionView)
+        scrollViewContainer.addArrangedSubview(buttonBackgroundView)
         createEventView.addSubview(categoryButton)
         categoryButton.addSubview(forwardImage1)
         if event == .regular {
@@ -281,67 +306,74 @@ class CreateEventViewController: UIViewController {
             createEventView.addSubview(scheduleButton)
             scheduleButton.addSubview(forwardImage2)
         }
-        updateScheduleButton()
-        scrollView.addSubview(emojiAndColorCollectionView)
-        scrollView.addSubview(buttonBackgroundView)
+        
+      
         buttonBackgroundView.addSubview(createEventButton)
         buttonBackgroundView.addSubview(cancelButton)
+        view.addGestureRecognizer(tapGesture)
     }
     
     private func setupLayout() {
         let createEventViewHeight: CGFloat = event == .regular ? 150 : 75
-        heightAnchor = errorLabel.heightAnchor.constraint(equalToConstant: 0)
+        heightAnchor = errorLabel.heightAnchor.constraint(equalToConstant: 25)
         var constraints = [
-            label.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
-            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),
-            label.heightAnchor.constraint(equalToConstant: 25),
-            label.widthAnchor.constraint(equalToConstant: 250),
             
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),
+           
+            
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            textField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 38),
-            textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            scrollViewContainer.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            scrollViewContainer.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            scrollViewContainer.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            scrollViewContainer.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            scrollViewContainer.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            
+            textField.topAnchor.constraint(equalTo: scrollViewContainer.topAnchor, constant: 10),
+            textField.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
+            textField.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
             textField.heightAnchor.constraint(equalToConstant: 75),
             
-            errorLabel.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 0),
-            errorLabel.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            errorLabel.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 25),
+            errorLabel.centerXAnchor.constraint(equalTo: scrollViewContainer.centerXAnchor),
             heightAnchor!,
             
             createEventView.topAnchor.constraint(equalTo: errorLabel.bottomAnchor, constant: 16),
-            createEventView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            createEventView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            createEventView.leadingAnchor.constraint(equalTo: scrollViewContainer.leadingAnchor, constant: 16),
+            createEventView.trailingAnchor.constraint(equalTo: scrollViewContainer.trailingAnchor, constant: -16),
             createEventView.heightAnchor.constraint(equalToConstant: createEventViewHeight),
+            createEventView.widthAnchor.constraint(equalToConstant: scrollViewContainer.bounds.width - 32),
             
             categoryButton.topAnchor.constraint(equalTo: createEventView.topAnchor),
             categoryButton.bottomAnchor.constraint(equalTo:  self.event == .regular ? separatorView.topAnchor : createEventView.bottomAnchor),
             categoryButton.trailingAnchor.constraint(equalTo: createEventView.trailingAnchor),
             categoryButton.leadingAnchor.constraint(equalTo: createEventView.leadingAnchor),
+          
             
             forwardImage1.trailingAnchor.constraint(equalTo: categoryButton.trailingAnchor, constant: -24),
             forwardImage1.centerYAnchor.constraint(equalTo: categoryButton.centerYAnchor),
             
             emojiAndColorCollectionView.topAnchor.constraint(equalTo: createEventView.bottomAnchor, constant: 22),
-            emojiAndColorCollectionView.bottomAnchor.constraint(equalTo: buttonBackgroundView.topAnchor),
-            emojiAndColorCollectionView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
-            emojiAndColorCollectionView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
-            emojiAndColorCollectionView.widthAnchor.constraint(equalToConstant: scrollView.bounds.width - 32),
-            emojiAndColorCollectionView.heightAnchor.constraint(equalToConstant: 400),
+            emojiAndColorCollectionView.leadingAnchor.constraint(equalTo: scrollViewContainer.leadingAnchor, constant: 16),
+            emojiAndColorCollectionView.trailingAnchor.constraint(equalTo: scrollViewContainer.trailingAnchor, constant: -16),
+            emojiAndColorCollectionView.widthAnchor.constraint(equalToConstant: scrollViewContainer.bounds.width - 32),
+            emojiAndColorCollectionView.heightAnchor.constraint(equalToConstant: 450),
             
-            buttonBackgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            buttonBackgroundView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            buttonBackgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            buttonBackgroundView.leadingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.leadingAnchor),
+            buttonBackgroundView.trailingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.trailingAnchor),
+            buttonBackgroundView.bottomAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.bottomAnchor),
             buttonBackgroundView.heightAnchor.constraint(equalToConstant: 80),
             
-            cancelButton.leadingAnchor.constraint(equalTo: buttonBackgroundView.leadingAnchor, constant: 20),
+            cancelButton.leadingAnchor.constraint(equalTo: buttonBackgroundView.leadingAnchor, constant: 5),
             cancelButton.bottomAnchor.constraint(equalTo: buttonBackgroundView.safeAreaLayoutGuide.bottomAnchor, constant: -10),
             cancelButton.widthAnchor.constraint(equalToConstant: 161),
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
             
-            createEventButton.trailingAnchor.constraint(equalTo: buttonBackgroundView.trailingAnchor, constant: -20),
+            createEventButton.trailingAnchor.constraint(equalTo: buttonBackgroundView.trailingAnchor, constant: -10),
             createEventButton.bottomAnchor.constraint(equalTo: buttonBackgroundView.safeAreaLayoutGuide.bottomAnchor, constant: -10),
             createEventButton.widthAnchor.constraint(equalToConstant: 161),
             createEventButton.heightAnchor.constraint(equalToConstant: 60)
@@ -391,11 +423,16 @@ class CreateEventViewController: UIViewController {
         numberOfCharacters = number
         if numberOfCharacters < limitNumberOfCharacters {
             errorLabel.text = ""
-            heightAnchor?.constant = 0
+            heightAnchor?.constant = 32
         } else {
             errorLabel.text = "Ограничение 38 символов"
             heightAnchor?.constant = 32
         }
+    }
+    
+    @objc
+    private func hideKeyboard() {
+        self.view.endEditing(true)
     }
 }
 
@@ -404,6 +441,7 @@ extension UITextField {
     func indent(size:CGFloat) {
         self.leftView = UIView(frame: CGRect(x: self.frame.minX, y: self.frame.minY, width: size, height: self.frame.height))
         self.leftViewMode = .always
+//        self.rightView = UIView(frame: CGRect(x: self.frame.minX, y: self.frame.minY, width: size, height: self.frame.height))
     }
 }
 
@@ -473,7 +511,7 @@ extension CreateEventViewController: UICollectionViewDelegate {
                 collectionView.deselectItem(at: selectedEmojiCell!, animated: true)
                 collectionView.cellForItem(at: selectedEmojiCell!)?.backgroundColor = .white
             }
-            cell?.backgroundColor = .lightGray
+            cell?.backgroundColor = .ypLightGray
             selectedEmoji = cell?.emojiLabel.text ?? ""
             selectedEmojiCell = indexPath
         } else if section == 1 {
@@ -483,7 +521,7 @@ extension CreateEventViewController: UICollectionViewDelegate {
             }
             cell?.layer.borderWidth = 3
             cell?.layer.cornerRadius = 8
-            cell?.layer.borderColor = UIColor.lightGray.cgColor
+            cell?.layer.borderColor = cell?.colorView.backgroundColor?.cgColor.copy(alpha: 0.5)
             selectedColor = cell?.colorView.backgroundColor ?? nil
             selectedColorCell = indexPath
         }

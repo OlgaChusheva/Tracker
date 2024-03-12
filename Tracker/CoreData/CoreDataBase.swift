@@ -14,12 +14,12 @@ enum DatabaseError: Error {
 
 final class CoreDataBase {
     
-    private let modelName = "Tracker"
+    private let modelName = "CoreData"
     var context: NSManagedObjectContext {
         persistentContainer.viewContext
     }
 
-    init() {
+    private init() {
         _ = persistentContainer
     }
     
