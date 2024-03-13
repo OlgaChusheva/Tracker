@@ -205,13 +205,6 @@ final class TrackersViewController: UIViewController {
                     
                 }
                 if  scheduleInts == [] {
-//                    let events = tracker
-//                    let event = TrackerRecord(id: tracker.id, date: Date())
-//
-//                    completedTrackers.append(event)
-//                    print (completedTrackers)
-//                    collectionView.reloadData()
-                    
                     newTrackers.append(tracker)
                     
                 }

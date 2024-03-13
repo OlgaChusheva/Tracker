@@ -37,6 +37,7 @@
 		1FD56E502B9B47FE00C692B5 /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD56E4F2B9B47FE00C692B5 /* TrackerCategoryStore.swift */; };
 		1FD56E522B9B481900C692B5 /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD56E512B9B481900C692B5 /* TrackerRecordStore.swift */; };
 		1FD56E542B9B889C00C692B5 /* String + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD56E532B9B889C00C692B5 /* String + Extension.swift */; };
+		1FD56E7C2BA1D89100C692B5 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD56E7B2BA1D89100C692B5 /* OnboardingViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +73,7 @@
 		1FD56E4F2B9B47FE00C692B5 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		1FD56E512B9B481900C692B5 /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
 		1FD56E532B9B889C00C692B5 /* String + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String + Extension.swift"; sourceTree = "<group>"; };
+		1FD56E7B2BA1D89100C692B5 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 				1F78CCBB2B729B8A00170810 /* SceneDelegate.swift */,
 				1F78CCD22B72C7C100170810 /* TabBarController.swift */,
 				1F7BA80B2B8CB053009F30A7 /* MockData.swift */,
+				1FD56E7B2BA1D89100C692B5 /* OnboardingViewController.swift */,
 			);
 			path = Applicathion;
 			sourceTree = "<group>";
@@ -294,6 +297,7 @@
 				1F78CD1F2B7A99CC00170810 /* Traker.swift in Sources */,
 				1F78CD1D2B78D7A300170810 /* StatisticsController.swift in Sources */,
 				1F7BA8232B8D1286009F30A7 /* Date+Extension.swift in Sources */,
+				1FD56E7C2BA1D89100C692B5 /* OnboardingViewController.swift in Sources */,
 				1F7BA8032B8B4F71009F30A7 /* TrackerCollectionViewCell.swift in Sources */,
 				1F78CCBC2B729B8A00170810 /* SceneDelegate.swift in Sources */,
 				1FD56E4E2B9B47BD00C692B5 /* TrackerStore.swift in Sources */,

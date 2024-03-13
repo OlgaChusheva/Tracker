@@ -22,37 +22,29 @@ final class TrackerRecordStore {
         self.context = context
     }
     
-     func addNewTrackerRecord(_ trackerRecord: TrackerRecord) throws {
+    func addNewTrackerRecord(_ trackerRecord: TrackerRecord) throws {
         let trackerRecordCoreData = TrackerRecordCoreData(context: context)
         updateExistingTrackerRecord(trackerRecordCoreData, with: trackerRecord)
         try context.save()
     }
     
     func deleteTrackerRecord(_ trackerRecord: TrackerRecord) throws {
-//        let trackerRecordCoreData = TrackerRecordCoreData(context: context)
-//        updateExistingTrackerRecord(trackerRecordCoreData, with: trackerRecord)
-        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
-        request.predicate = NSPredicate(format: "id == %@ AND date == %@", trackerRecord.id as CVarArg, trackerRecord.date as CVarArg)
-
-        if let existingRecord = try context.fetch(request).first {
-            context.delete(existingRecord)
-            try context.save()
-        }
-        
+        let trackerRecordCoreData = TrackerRecordCoreData(context: context)
+        updateExistingTrackerRecord(trackerRecordCoreData, with: trackerRecord)
     }
     
-    private func updateExistingTrackerRecord(_ trackerRecordCoreData: TrackerRecordCoreData, with record: TrackerRecord) {
+    func updateExistingTrackerRecord(_ trackerRecordCoreData: TrackerRecordCoreData, with record: TrackerRecord) {
         trackerRecordCoreData.idTracker = record.id
         trackerRecordCoreData.date = record.date
     }
     
-     func fetchTrackerRecord() throws -> [TrackerRecord] {
+    func fetchTrackerRecord() throws -> [TrackerRecord] {
         let fetchRequest = TrackerRecordCoreData.fetchRequest()
         let trackerRecordFromCoreData = try context.fetch(fetchRequest)
         return try trackerRecordFromCoreData.map { try self.trackerRecord(from: $0) }
     }
     
-    private func trackerRecord(from data: TrackerRecordCoreData) throws -> TrackerRecord {
+    func trackerRecord(from data: TrackerRecordCoreData) throws -> TrackerRecord {
         guard let id = data.idTracker else {
             throw DatabaseError.someError
         }

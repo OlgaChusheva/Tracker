@@ -33,7 +33,7 @@ final class TabBarController: UITabBarController {
         tabBar.tintColor = UIColor(named: "BlueYP")
         tabBar.barTintColor = UIColor(named: "GrayYP")
         
-        tabBar.layer.borderColor = CGColor(red: 174, green: 175, blue: 180, alpha: 1)
+        tabBar.layer.borderColor = UIColor(red:0.0/255.0, green:0.0/255.0, blue:0.0/255.0, alpha:0.2).cgColor
         tabBar.layer.borderWidth = 1
         tabBar.layer.masksToBounds = true
         
