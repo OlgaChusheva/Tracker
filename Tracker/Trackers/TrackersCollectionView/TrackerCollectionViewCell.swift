@@ -71,10 +71,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         checkButton.translatesAutoresizingMaskIntoConstraints = false
         return checkButton
     }()
-    
-    
-    
-    
+        
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -112,9 +109,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
             checkButton.heightAnchor.constraint(equalToConstant: 40),
             checkButton.widthAnchor.constraint(equalToConstant: 40 ),
             
-//            checkButtonView.centerYAnchor.constraint(equalTo: checkButton.centerYAnchor) ,
-//            checkButtonView.centerYAnchor.constraint(equalTo: checkButton.centerYAnchor),
-            
             resultLabel.centerYAnchor.constraint(equalTo: checkButton.centerYAnchor),
             resultLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12)
         ])
@@ -131,7 +125,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
             return
         }
         delegate?.completedTracker(id: id)
-        
     }
     
     func configure(
@@ -151,18 +144,13 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         trackerId = id
         trackerNameLabel.text = name
         trackerView.backgroundColor = color
-   
 
-        
         emojiLabel.text = emoji
         isCompletedToday = isCompleted
         checkButton.setImage(isCompletedToday ? UIImage(systemName: "checkmark")! : UIImage(systemName: "plus")!, for: .normal)
         
         checkButton.backgroundColor = (isCompletedToday ? color.withAlphaComponent(0.5)  : color.withAlphaComponent(1))
-        
-       
-       
-        
+
         checkButton.isEnabled = isEnabled
         
         if completedCount == 0 {
