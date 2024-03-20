@@ -45,7 +45,11 @@ final class TrackersViewController: UIViewController {
         return label
     }()
     
-    private lazy var datePicker = UIDatePicker()
+    private lazy var datePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.tintColor = .ypBlue
+        return datePicker
+    }()
     
     private lazy var searchTextField: UISearchTextField = {
         let searchTextField = UISearchTextField()
@@ -53,6 +57,7 @@ final class TrackersViewController: UIViewController {
         searchTextField.textColor = .ypBlack
         searchTextField.font = .systemFont(ofSize: 17)
         searchTextField.backgroundColor = .ypGrayFind
+        searchTextField.tintColor = .ypBlue
         searchTextField.layer.cornerRadius = 10
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
         searchTextField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
