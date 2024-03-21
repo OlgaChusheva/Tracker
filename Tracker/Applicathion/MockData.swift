@@ -10,12 +10,12 @@ import Foundation
 class MockData {
     
 
-    static var categories: [TrackerCategory] = [
-        TrackerCategory(name: "Важное", trackers: [
+    static var categories: [TrackerCategoryModel] = [
+        TrackerCategoryModel(name: "Важное", trackers: [
             Tracker(id: UUID(), name: "Погулять с собакой", color: .color17, emoji: "🐶", schedule: [.monday, .saturday, .wednesday, .friday, .sunday, .thursday,.tuesday]),
             Tracker(id: UUID(), name: "Полить цветы", color: .color5, emoji: "🌸", schedule: [.wednesday, .saturday])
         ]),
-        TrackerCategory(name: "Тренировки", trackers: [
+        TrackerCategoryModel(name: "Тренировки", trackers: [
             Tracker(id: UUID(), name: "Зарядка", color: .color6, emoji: "🤸‍♂️", schedule: []),
             Tracker(id: UUID(), name: "Бассейн", color: .color15, emoji: "🏊‍♀️", schedule: [.tuesday, .thursday, .saturday]),
             Tracker(id: UUID(), name: "Бег", color: .color9, emoji: "🏃‍♂️", schedule: [.wednesday, .saturday])

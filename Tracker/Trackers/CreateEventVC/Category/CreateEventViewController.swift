@@ -26,6 +26,7 @@ protocol CreateEventVCDelegate: AnyObject {
 }
 
 class CreateEventViewController: UIViewController {
+    
     private let emojies = [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍒",
         "🍔", "🥦", "🏓", "🥇", "🎸", "🏝"
@@ -45,6 +46,12 @@ class CreateEventViewController: UIViewController {
             updateCreateEventButton()
         }
     }
+    
+    private var category: TrackerCategoryModel? = nil {
+        didSet {
+            updateCreateEventButton()
+        }
+    }
     private var selectedEmojiCell: IndexPath? = nil
     private var selectedColorCell: IndexPath? = nil
     private var selectedEmoji: String = "" {
@@ -59,6 +66,10 @@ class CreateEventViewController: UIViewController {
     }
     private var scheduleSubTitle: String = ""
     private var dayOfWeek: [String] = []
+    
+    var selectedCategory: TrackerCategoryModel?
+    var categorySubTitle: String = ""
+    
     public weak var delegate: CreateEventVCDelegate?
     
     private lazy var scrollView: UIScrollView = {
@@ -158,14 +169,27 @@ class CreateEventViewController: UIViewController {
     
     private lazy var categoryButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Категория", for: .normal)
-        button.titleLabel?.tintColor = .ypBlack
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
-        button.titleLabel?.font = .systemFont(ofSize: 17)
-        button.contentHorizontalAlignment = .left
         button.addTarget(self, action: #selector(categoryButtonAction), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
+    }()
+    
+    private lazy var categoryButtonTitle: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypBlack
+        label.text = "Категория"
+        label.font = .systemFont(ofSize: 16)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var categoryButtonSubTitle: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypGray
+        label.text = categorySubTitle
+        label.font = .systemFont(ofSize: 16)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
     private lazy var scheduleButton: UIButton = {
@@ -254,7 +278,7 @@ class CreateEventViewController: UIViewController {
     }
     
     func updateCreateEventButton() {
-        createEventButton.isEnabled = textField.text?.isEmpty == false && selectedColor != nil && !selectedEmoji.isEmpty
+        createEventButton.isEnabled = textField.text?.isEmpty == false && selectedColor != nil && !selectedEmoji.isEmpty && category != nil
         if event == .regular {
             createEventButton.isEnabled = createEventButton.isEnabled && !schedule.isEmpty
         }
@@ -267,8 +291,15 @@ class CreateEventViewController: UIViewController {
     }
     
     @objc func createEventButtonAction() {
-        let tracker = Tracker(id: UUID(), name: textField.text ?? "", color: selectedColor, emoji: selectedEmoji, schedule: schedule)
-        delegate?.createTracker(tracker, categoryName: "Важное")
+        var tracker: Tracker?
+        if event == .regular {
+            tracker = Tracker(id: UUID(), name: textField.text ?? "", color: selectedColor, emoji: selectedEmoji, schedule: schedule)
+        } else {
+            schedule = WeekDay.allCases
+            tracker = Tracker(id: UUID(), name: textField.text ?? "", color: selectedColor, emoji: selectedEmoji, schedule: schedule)
+        }
+        guard let tracker = tracker else { return }
+        delegate?.createTracker(tracker, categoryName: category?.name ?? "Без категории")
         dismiss(animated: true)
     }
     
@@ -277,13 +308,14 @@ class CreateEventViewController: UIViewController {
     }
     
     @objc private func categoryButtonAction() {
-        let categoryVC = CategoreViewController()
+        let categoryVC = CategoryListView(delegate: self, selectedCategory: category)
         present(categoryVC, animated: true)
     }
     
     @objc private func scheduleButtonAction() {
         let scheduleVC = ScheduleViewController()
         scheduleVC.delegate = self
+        scheduleVC.schedule = schedule
         present(scheduleVC, animated: true)
     }
     
@@ -307,7 +339,8 @@ class CreateEventViewController: UIViewController {
             scheduleButton.addSubview(forwardImage2)
         }
         
-      
+        updateScheduleButton()
+        updateCategoryButton()
         buttonBackgroundView.addSubview(createEventButton)
         buttonBackgroundView.addSubview(cancelButton)
         view.addGestureRecognizer(tapGesture)
@@ -404,6 +437,7 @@ class CreateEventViewController: UIViewController {
                 scheduleButtonTitle.centerYAnchor.constraint(equalTo: scheduleButton.centerYAnchor),
                 scheduleButtonTitle.leadingAnchor.constraint(equalTo: scheduleButton.leadingAnchor, constant: 16)
             ])
+            scheduleButtonSubTitle.isHidden = true
         } else {
             scheduleButton.addSubview(scheduleButtonTitle)
             scheduleButton.addSubview(scheduleButtonSubTitle)
@@ -414,6 +448,7 @@ class CreateEventViewController: UIViewController {
                 scheduleButtonSubTitle.bottomAnchor.constraint(equalTo: scheduleButton.bottomAnchor, constant: -13)
             ])
             scheduleButtonSubTitle.text = scheduleSubTitle
+            scheduleButtonSubTitle.isHidden = false
         }
     }
     
@@ -427,6 +462,26 @@ class CreateEventViewController: UIViewController {
         } else {
             errorLabel.text = "Ограничение 38 символов"
             heightAnchor?.constant = 32
+        }
+    }
+    
+    func updateCategoryButton() {
+        if categorySubTitle == "" {
+            categoryButton.addSubview(categoryButtonTitle)
+            NSLayoutConstraint.activate([
+                categoryButtonTitle.centerYAnchor.constraint(equalTo: categoryButton.centerYAnchor),
+                categoryButtonTitle.leadingAnchor.constraint(equalTo: categoryButton.leadingAnchor, constant: 16)
+            ])
+        } else {
+            categoryButton.addSubview(categoryButtonTitle)
+            categoryButton.addSubview(categoryButtonSubTitle)
+            NSLayoutConstraint.activate([
+                categoryButtonTitle.leadingAnchor.constraint(equalTo: categoryButton.leadingAnchor, constant: 16),
+                categoryButtonTitle.topAnchor.constraint(equalTo: categoryButton.topAnchor, constant: 15),
+                categoryButtonSubTitle.leadingAnchor.constraint(equalTo: categoryButton.leadingAnchor, constant: 16),
+                categoryButtonSubTitle.bottomAnchor.constraint(equalTo: categoryButton.bottomAnchor, constant: -13)
+            ])
+            categoryButtonSubTitle.text = categorySubTitle
         }
     }
     
@@ -464,6 +519,15 @@ extension CreateEventViewController: ScheduleVCDelegate {
         let scheduleString = schedule.map { $0.shortName }.joined(separator: ", ")
         scheduleSubTitle = scheduleString == "Пн, Вт, Ср, Чт, Пт, Сб, Вс" ? "Каждый день" : scheduleString
         updateScheduleButton()
+    }
+}
+
+extension CreateEventViewController: CategoryListViewModelDelegate {
+    func createCategory(category: TrackerCategoryModel) {
+        self.category = category
+        let categoryString = category.name
+        categorySubTitle = categoryString
+        updateCategoryButton()
     }
 }
 
