@@ -75,25 +75,19 @@ class CreateEventViewController: UIViewController {
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.backgroundColor = .white
-//        scrollView.frame = view.bounds
-//        scrollView.contentSize = contentSize
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
     
-//    private var contentSize: CGSize {
-//        CGSize(width: view.frame.width, height: view.frame.height + 400)
-//    }
-    
     let scrollViewContainer: UIStackView = {
-          let view = UIStackView()
-
-          view.axis = .vertical
-          view.spacing = 0
-
-          view.translatesAutoresizingMaskIntoConstraints = false
-          return view
-      }()
+        let view = UIStackView()
+        
+        view.axis = .vertical
+        view.spacing = 0
+        
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
     private lazy var label: UILabel = {
         let label = UILabel()
@@ -122,10 +116,10 @@ class CreateEventViewController: UIViewController {
     }()
     
     private lazy var tapGesture: UITapGestureRecognizer = {
-    let tapGesture = UITapGestureRecognizer()
-    tapGesture.addTarget(self, action: #selector(hideKeyboard))
-    tapGesture.cancelsTouchesInView = false
-    
+        let tapGesture = UITapGestureRecognizer()
+        tapGesture.addTarget(self, action: #selector(hideKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        
         return tapGesture
     }()
     
@@ -325,7 +319,7 @@ class CreateEventViewController: UIViewController {
         view.addSubview(label)
         view.addSubview(scrollView)
         scrollView.addSubview(scrollViewContainer)
-     //   scrollViewContainer.addArrangedSubview(label)
+        //   scrollViewContainer.addArrangedSubview(label)
         scrollViewContainer.addArrangedSubview(textField)
         scrollViewContainer.addArrangedSubview(errorLabel)
         scrollViewContainer.addArrangedSubview(createEventView)
@@ -353,7 +347,7 @@ class CreateEventViewController: UIViewController {
             
             label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),
-           
+            
             
             scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -385,7 +379,7 @@ class CreateEventViewController: UIViewController {
             categoryButton.bottomAnchor.constraint(equalTo:  self.event == .regular ? separatorView.topAnchor : createEventView.bottomAnchor),
             categoryButton.trailingAnchor.constraint(equalTo: createEventView.trailingAnchor),
             categoryButton.leadingAnchor.constraint(equalTo: createEventView.leadingAnchor),
-          
+            
             
             forwardImage1.trailingAnchor.constraint(equalTo: categoryButton.trailingAnchor, constant: -24),
             forwardImage1.centerYAnchor.constraint(equalTo: categoryButton.centerYAnchor),
@@ -445,23 +439,10 @@ class CreateEventViewController: UIViewController {
                 scheduleButtonTitle.leadingAnchor.constraint(equalTo: scheduleButton.leadingAnchor, constant: 16),
                 scheduleButtonTitle.topAnchor.constraint(equalTo: scheduleButton.topAnchor, constant: 15),
                 scheduleButtonSubTitle.leadingAnchor.constraint(equalTo: scheduleButton.leadingAnchor, constant: 16),
-                scheduleButtonSubTitle.bottomAnchor.constraint(equalTo: scheduleButton.bottomAnchor, constant: -13)
+                scheduleButtonSubTitle.bottomAnchor.constraint(equalTo: scheduleButton.bottomAnchor, constant: -7)
             ])
             scheduleButtonSubTitle.text = scheduleSubTitle
             scheduleButtonSubTitle.isHidden = false
-        }
-    }
-    
-    @objc func textFieldChanged() {
-        updateCreateEventButton()
-        guard let number = textField.text?.count else { return }
-        numberOfCharacters = number
-        if numberOfCharacters < limitNumberOfCharacters {
-            errorLabel.text = ""
-            heightAnchor?.constant = 32
-        } else {
-            errorLabel.text = "Ограничение 38 символов"
-            heightAnchor?.constant = 32
         }
     }
     
@@ -477,9 +458,9 @@ class CreateEventViewController: UIViewController {
             categoryButton.addSubview(categoryButtonSubTitle)
             NSLayoutConstraint.activate([
                 categoryButtonTitle.leadingAnchor.constraint(equalTo: categoryButton.leadingAnchor, constant: 16),
-                categoryButtonTitle.topAnchor.constraint(equalTo: categoryButton.topAnchor, constant: 15),
+                categoryButtonTitle.topAnchor.constraint(equalTo: categoryButton.topAnchor, constant: 7),
                 categoryButtonSubTitle.leadingAnchor.constraint(equalTo: categoryButton.leadingAnchor, constant: 16),
-                categoryButtonSubTitle.bottomAnchor.constraint(equalTo: categoryButton.bottomAnchor, constant: -13)
+                categoryButtonSubTitle.bottomAnchor.constraint(equalTo: categoryButton.bottomAnchor, constant: -7)
             ])
             categoryButtonSubTitle.text = categorySubTitle
         }
@@ -488,6 +469,20 @@ class CreateEventViewController: UIViewController {
     @objc
     private func hideKeyboard() {
         self.view.endEditing(true)
+    }
+    
+    
+    @objc func textFieldChanged() {
+        updateCreateEventButton()
+        guard let number = textField.text?.count else { return }
+        numberOfCharacters = number
+        if numberOfCharacters < limitNumberOfCharacters {
+            errorLabel.text = ""
+            heightAnchor?.constant = 32
+        } else {
+            errorLabel.text = "Ограничение 38 символов"
+            heightAnchor?.constant = 32
+        }
     }
 }
 

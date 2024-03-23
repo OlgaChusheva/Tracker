@@ -33,10 +33,19 @@ final class CategoryListViewModel: NSObject {
         categories = trackerCategoryStore.trackerCategories
     }
     
+    func deleteCategory(_ category: TrackerCategoryModel) {
+        try? self.trackerCategoryStore.deleteCategory(category)
+    }
+    
   
     func selectCategory(with name: String) {
         let category = TrackerCategoryModel(name: name, trackers: [])
         delegate?.createCategory(category: category)
+    }
+    
+    func selectCategory(_ category: TrackerCategoryModel) {
+        selectedCategory = category
+        onChange?()
     }
 
 }

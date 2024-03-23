@@ -8,7 +8,6 @@
 import Foundation
 import CoreData
 
-
 enum TrackerCategoryStoreError: Error {
     case decodingErrorInvalidName
 }
@@ -33,11 +32,11 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
 
 final class TrackerCategoryStore: NSObject {
     
-//    static let shared = TrackerCategoryStore()
+    weak var delegate: TrackerCategoryStoreDelegate?
+    
     private let trackerStore = TrackerStore()
     private let context: NSManagedObjectContext
     private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>!
-    weak var delegate: TrackerCategoryStoreDelegate?
     private var insertedIndexes: IndexSet?
     private var deletedIndexes: IndexSet?
     private var updatedIndexes: IndexSet?
@@ -184,7 +183,8 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(
-        _ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>)
+    {
         
             guard
             let insertedIndexes,

@@ -30,6 +30,8 @@
 		1F7BA8212B8D0EB0009F30A7 /* WeekDayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F7BA8202B8D0EB0009F30A7 /* WeekDayTableViewCell.swift */; };
 		1F7BA8232B8D1286009F30A7 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F7BA8222B8D1286009F30A7 /* Date+Extension.swift */; };
 		1FBC0FF22BAB74FA000BD0C4 /* CategoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBC0FF12BAB74FA000BD0C4 /* CategoryListViewModel.swift */; };
+		1FBC0FF52BAEE5A2000BD0C4 /* CreateCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBC0FF42BAEE5A2000BD0C4 /* CreateCategoryViewController.swift */; };
+		1FBC0FF72BAEE888000BD0C4 /* EditCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBC0FF62BAEE888000BD0C4 /* EditCategoryViewController.swift */; };
 		1FD56E1F2B9647E800C692B5 /* EmojiAndColorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD56E1E2B9647E800C692B5 /* EmojiAndColorCollectionViewCell.swift */; };
 		1FD56E212B96483500C692B5 /* EmojiAndColorSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD56E202B96483500C692B5 /* EmojiAndColorSupplementaryView.swift */; };
 		1FD56E262B965A0B00C692B5 /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1FD56E242B965A0B00C692B5 /* CoreData.xcdatamodeld */; };
@@ -67,6 +69,8 @@
 		1F7BA8202B8D0EB0009F30A7 /* WeekDayTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDayTableViewCell.swift; sourceTree = "<group>"; };
 		1F7BA8222B8D1286009F30A7 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		1FBC0FF12BAB74FA000BD0C4 /* CategoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListViewModel.swift; sourceTree = "<group>"; };
+		1FBC0FF42BAEE5A2000BD0C4 /* CreateCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCategoryViewController.swift; sourceTree = "<group>"; };
+		1FBC0FF62BAEE888000BD0C4 /* EditCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCategoryViewController.swift; sourceTree = "<group>"; };
 		1FD56E1E2B9647E800C692B5 /* EmojiAndColorCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiAndColorCollectionViewCell.swift; sourceTree = "<group>"; };
 		1FD56E202B96483500C692B5 /* EmojiAndColorSupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiAndColorSupplementaryView.swift; sourceTree = "<group>"; };
 		1FD56E252B965A0B00C692B5 /* CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreData.xcdatamodel; sourceTree = "<group>"; };
@@ -175,9 +179,11 @@
 		1F7BA8192B8CFE46009F30A7 /* Category */ = {
 			isa = PBXGroup;
 			children = (
-				1FBC0FF32BAB7558000BD0C4 /* MVVM */,
 				1F7BA8142B8CF5EB009F30A7 /* CreateEventViewController.swift */,
+				1FBC0FF32BAB7558000BD0C4 /* MVVM */,
 				1FD56E552B9CBEC800C692B5 /* EmojiAndColorCollectionView */,
+				1FBC0FF42BAEE5A2000BD0C4 /* CreateCategoryViewController.swift */,
+				1FBC0FF62BAEE888000BD0C4 /* EditCategoryViewController.swift */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -356,12 +362,14 @@
 				1F7BA8132B8CF539009F30A7 /* CreateTrackersViewController.swift in Sources */,
 				1F7BA81F2B8CFF25009F30A7 /* ScheduleViewController.swift in Sources */,
 				1FD56E262B965A0B00C692B5 /* CoreData.xcdatamodeld in Sources */,
+				1FBC0FF52BAEE5A2000BD0C4 /* CreateCategoryViewController.swift in Sources */,
 				1FD56E212B96483500C692B5 /* EmojiAndColorSupplementaryView.swift in Sources */,
 				1F7BA8212B8D0EB0009F30A7 /* WeekDayTableViewCell.swift in Sources */,
 				1FD56E1F2B9647E800C692B5 /* EmojiAndColorCollectionViewCell.swift in Sources */,
 				1FD56E522B9B481900C692B5 /* TrackerRecordStore.swift in Sources */,
 				1FD56E542B9B889C00C692B5 /* String + Extension.swift in Sources */,
 				1F7BA8062B8CAF59009F30A7 /* TrackerCategoryModel.swift in Sources */,
+				1FBC0FF72BAEE888000BD0C4 /* EditCategoryViewController.swift in Sources */,
 				1F7BA8152B8CF5EB009F30A7 /* CreateEventViewController.swift in Sources */,
 				1F7BA8172B8CF941009F30A7 /* TrackersSupplementaryView.swift in Sources */,
 				1F7BA81B2B8CFE66009F30A7 /* CategoryTableViewCell.swift in Sources */,

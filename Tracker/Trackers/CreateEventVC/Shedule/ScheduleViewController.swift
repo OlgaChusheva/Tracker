@@ -17,7 +17,7 @@ class ScheduleViewController: UIViewController {
     var schedule: [WeekDay] = []
     private lazy var label: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .ypBlack
         label.text = "Расписание"
         label.font = .systemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -91,16 +91,18 @@ extension ScheduleViewController: UITableViewDataSource {
         guard let weekDayCell = tableView.dequeueReusableCell(withIdentifier: WeekDayTableViewCell.identifier) as? WeekDayTableViewCell else {
             return UITableViewCell()
         }
+        let weekDay = WeekDay.allCases[indexPath.row]
         weekDayCell.delegate = self
         weekDayCell.contentView.backgroundColor = .backgroundColor
         weekDayCell.label.text = WeekDay.allCases[indexPath.row].rawValue
-        weekDayCell.weekDay = WeekDay.allCases[indexPath.row]
-        weekDayCell.selectionStyle = .none
+        weekDayCell.weekDay = weekDay
+        weekDayCell.switchCell.isOn = schedule.contains(weekDay)
         if indexPath.row == 6 {
             weekDayCell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         } else {
             weekDayCell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         }
+        weekDayCell.selectionStyle = .none
         return weekDayCell
     }
 }
@@ -111,7 +113,9 @@ extension ScheduleViewController: UITableViewDelegate {
         return 75
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) { }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) { 
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
 
 extension ScheduleViewController: WeekDayTableViewCellDelegate {
