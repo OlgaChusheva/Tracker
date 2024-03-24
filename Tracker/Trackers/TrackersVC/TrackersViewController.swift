@@ -12,13 +12,13 @@ final class TrackersViewController: UIViewController {
     private let trackerRecordStore = TrackerRecordStore()
     
     //список категорий и вложенных в них трекеров
-    private var categories: [TrackerCategory] = []//MockData.categories
+    private var categories: [TrackerCategoryModel] = []//MockData.categories
     
     //трекеры, которые были «выполнены» в выбранную дату
     private var completedTrackers: [TrackerRecord] = []
     
     //отображается при поиске и/или изменении дня недели
-    private var visibleCategories: [TrackerCategory] = []
+    private var visibleCategories: [TrackerCategoryModel] = []
     private var currentDate: Int?
     private var searchText: String = ""
     private var widthAnchor: NSLayoutConstraint?
@@ -45,7 +45,11 @@ final class TrackersViewController: UIViewController {
         return label
     }()
     
-    private lazy var datePicker = UIDatePicker()
+    private lazy var datePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.tintColor = .ypBlue
+        return datePicker
+    }()
     
     private lazy var searchTextField: UISearchTextField = {
         let searchTextField = UISearchTextField()
@@ -53,6 +57,7 @@ final class TrackersViewController: UIViewController {
         searchTextField.textColor = .ypBlack
         searchTextField.font = .systemFont(ofSize: 17)
         searchTextField.backgroundColor = .ypGrayFind
+        searchTextField.tintColor = .ypBlue
         searchTextField.layer.cornerRadius = 10
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
         searchTextField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
@@ -93,7 +98,7 @@ final class TrackersViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         setDayOfWeek()
-        updateCategories()
+        updateCategories(with: trackerCategoryStore.trackerCategories)
         completedTrackers = try! self.trackerRecordStore.fetchTrackerRecord()
         makeNavBar()
         addSubviews()
@@ -125,7 +130,7 @@ final class TrackersViewController: UIViewController {
         let components = Calendar.current.dateComponents([.weekday], from: sender.date)
         if let day = components.weekday {
             currentDate = day
-            updateCategories()
+            updateCategories(with: trackerCategoryStore.trackerCategories)
         }
     }
     
@@ -140,7 +145,6 @@ final class TrackersViewController: UIViewController {
         widthAnchor?.constant = 0
         setupLayout()
         searchText = ""
-        updateCategories()
     }
     
     private func addSubviews() {
@@ -192,10 +196,10 @@ final class TrackersViewController: UIViewController {
         currentDate = components.weekday
     }
     
-    private func updateCategories() {
-        var newCategories: [TrackerCategory] = []
+    private func updateCategories(with categories: [TrackerCategoryModel]) {
+        var newCategories: [TrackerCategoryModel] = []
         visibleCategories = trackerCategoryStore.trackerCategories
-        for category in visibleCategories {
+        for category in categories {
             var newTrackers: [Tracker] = []
             for tracker in category.visibleTrackers(filterString: searchText) {
                 guard let schedule = tracker.schedule else { return }
@@ -210,7 +214,7 @@ final class TrackersViewController: UIViewController {
                 }
             }
             if newTrackers.count > 0 {
-                let newCategory = TrackerCategory(name: category.name, trackers: newTrackers)
+                let newCategory = TrackerCategoryModel(name: category.name, trackers: newTrackers)
                 newCategories.append(newCategory)
             }
         }
@@ -317,8 +321,8 @@ extension TrackersViewController: CreateTrackerVCDelegate {
     func createTracker(
         _ tracker: Tracker, categoryName: String
     ) {
-        var categoryToUpdate: TrackerCategory?
-        let categories: [TrackerCategory] = trackerCategoryStore.trackerCategories
+        var categoryToUpdate: TrackerCategoryModel?
+        let categories: [TrackerCategoryModel] = trackerCategoryStore.trackerCategories
         for i in 0..<categories.count {
             if categories[i].name == categoryName {
                 categoryToUpdate = categories[i]
@@ -327,11 +331,10 @@ extension TrackersViewController: CreateTrackerVCDelegate {
         if categoryToUpdate != nil {
             try? trackerCategoryStore.addTracker(tracker, to: categoryToUpdate!)
         } else {
-            let newCategory = TrackerCategory(name: categoryName, trackers: [tracker])
+            let newCategory = TrackerCategoryModel(name: categoryName, trackers: [tracker])
             categoryToUpdate = newCategory
             try? trackerCategoryStore.addNewTrackerCategory(categoryToUpdate!)
         }
-        updateCategories()
         dismiss(animated: true)
     }
 }

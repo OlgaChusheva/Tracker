@@ -17,17 +17,14 @@ import UIKit
     
 final class TabBarController: UITabBarController {
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super .init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        
-        configure()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        generateTabBar()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
-    private func configure() {
+    
+    private func generateTabBar() {
         
         tabBar.backgroundColor = UIColor(named: "WhiteYP")
         tabBar.tintColor = UIColor(named: "BlueYP")
@@ -36,6 +33,9 @@ final class TabBarController: UITabBarController {
         tabBar.layer.borderColor = UIColor(red:0.0/255.0, green:0.0/255.0, blue:0.0/255.0, alpha:0.2).cgColor
         tabBar.layer.borderWidth = 1
         tabBar.layer.masksToBounds = true
+    }
+        
+        class func configure() -> UIViewController {
         
         let trackersNavigathion = UINavigationController(rootViewController: TrackersViewController())
         let statisticsNavigathion = UINavigationController(rootViewController: StatisticsController())
@@ -47,7 +47,8 @@ final class TabBarController: UITabBarController {
         statisticsNavigathion.tabBarItem = UITabBarItem(title: "Статистика",
                                                        image: UIImage(named: "Statistics"),
                                                        tag: Tabs.statistics.rawValue)
-        
-        setViewControllers([trackersNavigathion, statisticsNavigathion], animated: false)
+            let tabBarController = TabBarController()
+            tabBarController.viewControllers = [trackersNavigathion, statisticsNavigathion]
+            return tabBarController
     }
 }
