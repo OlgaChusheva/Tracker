@@ -26,20 +26,27 @@ protocol CreateEventVCDelegate: AnyObject {
 }
 
 class CreateEventViewController: UIViewController {
+    private let colors = Colors()
+    public weak var delegate: CreateEventVCDelegate?
     
     private let emojies = [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍒",
         "🍔", "🥦", "🏓", "🥇", "🎸", "🏝"
     ]
     
-    private let colors: [UIColor] = [.color1, .color2, .color3, .color4, .color5, .color6, .color7, .color8, .color9, .color10, .color11, .color12, .color13, .color14, .color15, .color16, .color17, .color18]
+    private let colorsArray: [UIColor] = [.color1, .color2, .color3, .color4, .color5, .color6, .color7, .color8, .color9, .color10, .color11, .color12, .color13, .color14, .color15, .color16, .color17, .color18]
     
     private var collectionViewHeader = ["Emoji", "Цвет"]
     private let event: Event
     private let nameCell = ["Категория", "Расписание"]
     private let limitNumberOfCharacters = 38
+    private let trackerStore = TrackerStore()
+    private let trackerRecordStore = TrackerRecordStore()
     private var numberOfCharacters = 0
     private var heightAnchor: NSLayoutConstraint?
+    var editTracker: Tracker?
+    var editTrackerDate: Date?
+    private var completedTrackers: [TrackerRecord] = []
     private var schedule: [WeekDay] = []
     {
         didSet {
@@ -47,7 +54,7 @@ class CreateEventViewController: UIViewController {
         }
     }
     
-    private var category: TrackerCategoryModel? = nil {
+     var category: TrackerCategoryModel? = nil {
         didSet {
             updateCreateEventButton()
         }
@@ -70,7 +77,7 @@ class CreateEventViewController: UIViewController {
     var selectedCategory: TrackerCategoryModel?
     var categorySubTitle: String = ""
     
-    public weak var delegate: CreateEventVCDelegate?
+
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -286,18 +293,33 @@ class CreateEventViewController: UIViewController {
     
     @objc func createEventButtonAction() {
         var tracker: Tracker?
-        if event == .regular {
-            tracker = Tracker(id: UUID(), name: textField.text ?? "", color: selectedColor, emoji: selectedEmoji, schedule: schedule)
+        if editTracker == nil {
+            if event == .regular {
+                tracker = Tracker(id: UUID(), name: textField.text ?? "", color: selectedColor, emoji: selectedEmoji, schedule: schedule, pinned: false)
+            } else {
+                schedule = WeekDay.allCases
+                tracker = Tracker(id: UUID(), name: textField.text ?? "", color: selectedColor, emoji: selectedEmoji, schedule: schedule, pinned: false)
+            }
+            guard let tracker = tracker else { return }
+            delegate?.createTracker(tracker, categoryName: category?.name ?? "Без категории")
+            
         } else {
-            schedule = WeekDay.allCases
-            tracker = Tracker(id: UUID(), name: textField.text ?? "", color: selectedColor, emoji: selectedEmoji, schedule: schedule)
+            guard let editTracker = editTracker else { return }
+            
+            try? trackerStore.updateTracker(
+                newNameTracker: textField.text ?? "",
+                newEmoji: selectedEmoji,
+                newColor: selectedColor?.hexString ?? "",
+                newSchedule: schedule,
+                categoryName: category?.name ?? "Без категории",
+                editableTracker: editTracker
+            )
         }
-        guard let tracker = tracker else { return }
-        delegate?.createTracker(tracker, categoryName: category?.name ?? "Без категории")
         dismiss(animated: true)
     }
     
     @objc private func cancelButtonAction() {
+        
         dismiss(animated: true)
     }
     
@@ -486,13 +508,13 @@ class CreateEventViewController: UIViewController {
     }
 }
 
-extension UITextField {
-    
-    func indent(size:CGFloat) {
-        self.leftView = UIView(frame: CGRect(x: self.frame.minX, y: self.frame.minY, width: size, height: self.frame.height))
-        self.leftViewMode = .always
-    }
-}
+//extension UITextField {
+//    
+//    func indent(size:CGFloat) {
+//        self.leftView = UIView(frame: CGRect(x: self.frame.minX, y: self.frame.minY, width: size, height: self.frame.height))
+//        self.leftViewMode = .always
+//    }
+//}
 
 extension CreateEventViewController: UITextFieldDelegate {
     func textField(
@@ -532,7 +554,7 @@ extension CreateEventViewController: UICollectionViewDataSource {
         if section == 0 {
             returnValue = emojies.count
         } else if section == 1 {
-            returnValue = colors.count
+            returnValue = colorsArray.count
         }
         return returnValue
     }
@@ -549,7 +571,7 @@ extension CreateEventViewController: UICollectionViewDataSource {
         if section == 0 {
             cell.emojiLabel.text = emojies[indexPath.row]
         } else if section == 1 {
-            cell.colorView.backgroundColor = colors[indexPath.row]
+            cell.colorView.backgroundColor = colorsArray[indexPath.row]
             cell.colorView.layer.cornerRadius = 8
         }
         return cell

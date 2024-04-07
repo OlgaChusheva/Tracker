@@ -7,23 +7,19 @@
 
 import Foundation
 import UIKit
-
-
     
     enum Tabs: Int {
         case trackers
         case statistics
     }
     
-final class TabBarController: UITabBarController {
+class TabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         generateTabBar()
     }
-    
-    
-    
+   
     private func generateTabBar() {
         
         tabBar.backgroundColor = UIColor(named: "WhiteYP")
@@ -44,7 +40,7 @@ final class TabBarController: UITabBarController {
                                                      image: UIImage(named: "Trackers"),
                                                      tag: Tabs.trackers.rawValue)
       
-        statisticsNavigathion.tabBarItem = UITabBarItem(title: "Статистика",
+        statisticsNavigathion.tabBarItem = UITabBarItem(title: NSLocalizedString("statistics", tableName: "LocalizableString", comment: "statistics"),
                                                        image: UIImage(named: "Statistics"),
                                                        tag: Tabs.statistics.rawValue)
             let tabBarController = TabBarController()

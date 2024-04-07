@@ -7,9 +7,20 @@
 
 import UIKit
 
+final class Colors {
+    var viewBackgroundColor = UIColor.systemBackground
+    var datePickerTintColor = UIColor { (traits) -> UIColor in
+        let isDarkMode = traits.userInterfaceStyle == .dark
+        return isDarkMode ? UIColor.black : UIColor.black
+    }
+}
+
 extension UIColor {
     
     static var backgroundColor: UIColor { UIColor(named: "BackgroundColorYP") ?? UIColor.red }
+    var gradientColor: UIColor { UIColor (named: "gradientColor1") ?? UIColor.red }
+    var gradientColor2: UIColor { UIColor(named: "gradientColor2") ?? UIColor.green }
+    var gradientColor3: UIColor { UIColor(named: "gradientColor3") ?? UIColor.blue }
     static var ypLightGray: UIColor { UIColor(named: "LightGrayYP") ?? UIColor.gray }
     static var ypGray: UIColor { UIColor(named: "GrayYP") ?? UIColor.gray }
     static var ypRed: UIColor { UIColor(named: "RedYP") ?? UIColor.red }

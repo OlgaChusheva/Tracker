@@ -13,7 +13,7 @@ protocol CreateTrackerVCDelegate: AnyObject {
 }
 
 class CreateTrackerViewController: UIViewController {
-   
+    private let colors = Colors()
     public weak var delegate: CreateTrackerVCDelegate?
     
     private lazy var label: UILabel = {
