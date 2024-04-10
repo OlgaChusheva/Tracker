@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class EditCategoryViewController: UIViewController {
+final class EditCategoryViewController: UIViewController {
     
     var editableCategory: TrackerCategoryModel?
     

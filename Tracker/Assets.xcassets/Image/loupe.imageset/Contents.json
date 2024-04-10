@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Property 1=Component 1, Property 2=ic, Property 3=pin@3x 1.png",
+      "filename" : "loupe.pdf",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Property 1=Component 1, Property 2=ic, Property 3=pin@3x 2.png",
+      "filename" : "loupe 1.pdf",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Property 1=Component 1, Property 2=ic, Property 3=pin@3x.png",
+      "filename" : "loupe 2.pdf",
       "idiom" : "universal",
       "scale" : "3x"
     }

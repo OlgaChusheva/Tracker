@@ -9,7 +9,7 @@ import Foundation
 
 import UIKit
 
-class TrackersSupplementaryView: UICollectionReusableView {
+final class TrackersSupplementaryView: UICollectionReusableView {
     
     static let identifier = "header"
     

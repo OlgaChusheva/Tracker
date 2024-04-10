@@ -13,7 +13,7 @@ import UIKit
         case statistics
     }
     
-class TabBarController: UITabBarController {
+final class TabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +40,7 @@ class TabBarController: UITabBarController {
                                                      image: UIImage(named: "Trackers"),
                                                      tag: Tabs.trackers.rawValue)
       
-        statisticsNavigathion.tabBarItem = UITabBarItem(title: NSLocalizedString("statistics", tableName: "LocalizableString", comment: "statistics"),
+        statisticsNavigathion.tabBarItem = UITabBarItem(title: NSLocalizedString("statistics", tableName: "Localizable", comment: "statistics"),
                                                        image: UIImage(named: "Statistics"),
                                                        tag: Tabs.statistics.rawValue)
             let tabBarController = TabBarController()

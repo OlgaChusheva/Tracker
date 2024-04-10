@@ -3,8 +3,6 @@
 //  Tracker
 //
 //  Created by Ольга Чушева on 06.02.2024.
-// e51dc45d-65f2-4d7d-aa57-b546cc0fb7ce
-//
 
 import UIKit
 import CoreData

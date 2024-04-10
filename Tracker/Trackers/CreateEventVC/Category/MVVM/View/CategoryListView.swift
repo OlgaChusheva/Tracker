@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CategoryListView: UIViewController {
+final class CategoryListView: UIViewController {
     private let viewModel: CategoryListViewModel
     
     private lazy var titleLabel: UILabel = {

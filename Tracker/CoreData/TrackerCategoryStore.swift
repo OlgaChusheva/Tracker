@@ -76,7 +76,6 @@ final class TrackerCategoryStore: NSObject {
         )
         controller.delegate = self
         self.fetchedResultsController = controller
-     //   try controller.performFetch()
     }
 
      func addNewTrackerCategory(_ trackerCategory: TrackerCategoryModel) throws {

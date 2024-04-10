@@ -12,7 +12,7 @@ protocol CreateCategoryVCDelegate {
     func createdCategory(_ category: TrackerCategoryModel)
 }
 
-class CreateCategoryViewController: UIViewController {
+final class CreateCategoryViewController: UIViewController {
     var delegate: CreateCategoryVCDelegate?
     
     private lazy var titleLabel: UILabel = {

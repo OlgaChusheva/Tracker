@@ -31,7 +31,7 @@ protocol TrackerRecordStoreDelegate: AnyObject {
 }
 
 
-class TrackerRecordStore: NSObject {
+final class TrackerRecordStore: NSObject {
     weak var delegate: TrackerRecordStoreDelegate?
     
     private let context: NSManagedObjectContext
@@ -96,12 +96,6 @@ class TrackerRecordStore: NSObject {
         trackerRecordCoreData.idTracker = record.id
         trackerRecordCoreData.date = record.date
     }
-    
-//    func fetchTrackerRecord() throws -> [TrackerRecord] {
-//        let fetchRequest = TrackerRecordCoreData.fetchRequest()
-//        let trackerRecordFromCoreData = try context.fetch(fetchRequest)
-//        return try trackerRecordFromCoreData.map { try self.trackerRecord(from: $0) }
-//    }
     
     func trackerRecord(from data: TrackerRecordCoreData) throws -> TrackerRecord {
         guard let id = data.idTracker else {

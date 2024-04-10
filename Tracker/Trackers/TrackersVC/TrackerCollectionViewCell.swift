@@ -102,10 +102,10 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
             trackerView.topAnchor.constraint(equalTo: contentView.topAnchor),
             trackerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             
-            pinImageView.heightAnchor.constraint(equalToConstant: 12),
-            pinImageView.widthAnchor.constraint(equalToConstant: 8),
-            pinImageView.topAnchor.constraint(equalTo: trackerView.topAnchor, constant: 18),
-            pinImageView.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -12),
+            pinImageView.heightAnchor.constraint(equalToConstant: 24),
+            pinImageView.widthAnchor.constraint(equalToConstant: 24),
+            pinImageView.topAnchor.constraint(equalTo: trackerView.topAnchor, constant: 12),
+            pinImageView.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -4),
             
             emojiView.heightAnchor.constraint(equalToConstant: 24),
             emojiView.widthAnchor.constraint(equalToConstant: 24),
@@ -154,16 +154,11 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         completedCount: Int,
         pinned: Bool
     ) {
-        //        let mod10 = completedCount % 10
-        //        let mod100 = completedCount % 100
-        //        let not10To20 = mod100 < 10 || mod100 > 20
-        //        var str = "\(completedCount) "
         
         trackerId = id
         trackerNameLabel.text = name
         trackerView.backgroundColor = color
         checkButton.backgroundColor = color
-        
         emojiLabel.text = emoji
         pinImageView.isHidden = !pinned
         isCompletedToday = isCompleted

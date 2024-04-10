@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class EmojiAndColorSupplementaryView: UICollectionReusableView {
+final class EmojiAndColorSupplementaryView: UICollectionReusableView {
     
     static let identifier = "header"
     

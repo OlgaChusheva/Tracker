@@ -52,6 +52,7 @@
 		1FE8C24D2BC3326B0063E9C7 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE8C24C2BC3326B0063E9C7 /* AnalyticsService.swift */; };
 		1FE8C24F2BC332E90063E9C7 /* EventEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE8C24E2BC332E90063E9C7 /* EventEnum.swift */; };
 		1FE8C2512BC334340063E9C7 /* ItemsEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE8C2502BC334340063E9C7 /* ItemsEnum.swift */; };
+		1FE8C25A2BC72F260063E9C7 /* LocalizableDict.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 1FE8C2582BC72F260063E9C7 /* LocalizableDict.stringsdict */; };
 		2FCCAA16C4B8AE1360744244 /* Pods_Tracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B56261AF203F67922A712255 /* Pods_Tracker.framework */; };
 		968ECD51BB8736E7A8E25028 /* Pods_TrackerTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3647519E824093BF2AD81D79 /* Pods_TrackerTest.framework */; };
 /* End PBXBuildFile section */
@@ -140,6 +141,8 @@
 		1FE8C24C2BC3326B0063E9C7 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		1FE8C24E2BC332E90063E9C7 /* EventEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEnum.swift; sourceTree = "<group>"; };
 		1FE8C2502BC334340063E9C7 /* ItemsEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsEnum.swift; sourceTree = "<group>"; };
+		1FE8C2592BC72F260063E9C7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/LocalizableDict.stringsdict; sourceTree = "<group>"; };
+		1FE8C25C2BC72FCC0063E9C7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/LocalizableDict.stringsdict; sourceTree = "<group>"; };
 		3647519E824093BF2AD81D79 /* Pods_TrackerTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TrackerTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7963C28BCEE5FD0CE4DA1B5D /* Pods-TrackerTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrackerTest.release.xcconfig"; path = "Target Support Files/Pods-TrackerTest/Pods-TrackerTest.release.xcconfig"; sourceTree = "<group>"; };
 		7A12783972A99D258EFA2AF3 /* Pods-TrackerTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrackerTest.debug.xcconfig"; path = "Target Support Files/Pods-TrackerTest/Pods-TrackerTest.debug.xcconfig"; sourceTree = "<group>"; };
@@ -223,7 +226,6 @@
 				1F78CD1E2B7A99CC00170810 /* Traker.swift */,
 				1F7BA8072B8CAF77009F30A7 /* TrackerRecord.swift */,
 				1F7BA8092B8CAFCE009F30A7 /* WeekdaysEnum.swift */,
-				1FBC0FFE2BBCA05B000BD0C4 /* FiltersEnum.swift */,
 				1FE8C24E2BC332E90063E9C7 /* EventEnum.swift */,
 				1FE8C2502BC334340063E9C7 /* ItemsEnum.swift */,
 			);
@@ -342,6 +344,7 @@
 			isa = PBXGroup;
 			children = (
 				1FBC0FF82BB4ACC4000BD0C4 /* Localizable.strings */,
+				1FE8C25B2BC72F8F0063E9C7 /* New Group */,
 			);
 			path = Local;
 			sourceTree = "<group>";
@@ -383,6 +386,14 @@
 			path = StatisticsVC;
 			sourceTree = "<group>";
 		};
+		1FE8C25B2BC72F8F0063E9C7 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				1FE8C2582BC72F260063E9C7 /* LocalizableDict.stringsdict */,
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
 		2504FDCB6A37DD245BA1E957 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -395,6 +406,7 @@
 		BB2967F7D208FDDEF40F4F0C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
+				1FBC0FFE2BBCA05B000BD0C4 /* FiltersEnum.swift */,
 				D938D6C31F72AA19FABD5817 /* Pods-Tracker.debug.xcconfig */,
 				0DC7798B466B45615DFEECA2 /* Pods-Tracker.release.xcconfig */,
 				7A12783972A99D258EFA2AF3 /* Pods-TrackerTest.debug.xcconfig */,
@@ -498,6 +510,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F78CCC62B729B8F00170810 /* LaunchScreen.storyboard in Resources */,
+				1FE8C25A2BC72F260063E9C7 /* LocalizableDict.stringsdict in Resources */,
 				1FBC0FFA2BB4ACC4000BD0C4 /* Localizable.strings in Resources */,
 				1F78CCC32B729B8F00170810 /* Assets.xcassets in Resources */,
 			);
@@ -657,6 +670,15 @@
 				1FBC0FFD2BB4AED0000BD0C4 /* ru */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		1FE8C2582BC72F260063E9C7 /* LocalizableDict.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1FE8C2592BC72F260063E9C7 /* en */,
+				1FE8C25C2BC72FCC0063E9C7 /* ru */,
+			);
+			name = LocalizableDict.stringsdict;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -19,13 +19,22 @@ enum Event {
             return "Новое нерегулярное событие"
         }
     }
+    
+    var editTitleText: String {
+        switch self {
+        case .regular:
+            return "Редактирование привычки"
+        case .irregular:
+            return "Редактирование привычки"
+        }
+    }
 }
 
 protocol CreateEventVCDelegate: AnyObject {
     func createTracker(_ tracker: Tracker, categoryName: String)
 }
 
-class CreateEventViewController: UIViewController {
+final class CreateEventViewController: UIViewController {
     private let colors = Colors()
     public weak var delegate: CreateEventVCDelegate?
     
@@ -47,14 +56,13 @@ class CreateEventViewController: UIViewController {
     var editTracker: Tracker?
     var editTrackerDate: Date?
     private var completedTrackers: [TrackerRecord] = []
-    private var schedule: [WeekDay] = []
-    {
+    private var schedule: [WeekDay] = [] {
         didSet {
             updateCreateEventButton()
         }
     }
     
-     var category: TrackerCategoryModel? = nil {
+    var category: TrackerCategoryModel? = nil {
         didSet {
             updateCreateEventButton()
         }
@@ -77,7 +85,7 @@ class CreateEventViewController: UIViewController {
     var selectedCategory: TrackerCategoryModel?
     var categorySubTitle: String = ""
     
-
+    
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -96,6 +104,46 @@ class CreateEventViewController: UIViewController {
         return view
     }()
     
+    private lazy var completedDaysBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.isHidden = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var completedDaysLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypBlack
+        label.text = "Дней"
+        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var plusButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .color2
+        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        button.tintColor = .white
+        button.layer.cornerRadius = 17
+        button.addTarget(self, action: #selector(plusButtonAction), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var minusButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .color2
+        button.layer.cornerRadius = 17
+        button.setImage(UIImage(systemName: "minus"), for: .normal)
+        button.tintColor = .white
+        button.addTarget(self, action: #selector(minusButtonAction), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     private lazy var label: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -111,7 +159,7 @@ class CreateEventViewController: UIViewController {
         textField.indent(size: 10)
         textField.placeholder = "Введите название трекера"
         textField.textColor = .ypBlack
-        textField.backgroundColor = .backgroundColor
+        textField.backgroundColor = .textField
         textField.tintColor = .ypBlue
         textField.layer.cornerRadius = 16
         textField.font = .systemFont(ofSize: 17)
@@ -239,6 +287,7 @@ class CreateEventViewController: UIViewController {
     
     private lazy var createEventButton: UIButton = {
         let button = UIButton()
+        var titleButton = editTracker == nil ? "Создать" : "Сохранить"
         button.setTitle("Создать", for: .normal)
         button.backgroundColor = .ypGray
         button.layer.cornerRadius = 16
@@ -275,7 +324,60 @@ class CreateEventViewController: UIViewController {
         view.backgroundColor = .white
         addSubviews()
         setupLayout()
+        setupEditTracker()
         emojiAndColorCollectionView.allowsMultipleSelection = true
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        guard let indexPathEmoji = emojies.firstIndex(where: {$0 == selectedEmoji}) else { return }
+        let cellEmoji = self.emojiAndColorCollectionView.cellForItem(at: IndexPath(row: indexPathEmoji, section: 0))
+        cellEmoji?.backgroundColor = .lightGray
+        selectedEmojiCell = IndexPath(row: indexPathEmoji, section: 0)
+        
+        guard let indexPathColor = colorsArray.firstIndex(where: {$0.hexString == selectedColor?.hexString}) else { return }
+        let cellColor = self.emojiAndColorCollectionView.cellForItem(at: IndexPath(row: indexPathColor, section: 1))
+        cellColor?.layer.borderWidth = 3
+        cellColor?.layer.cornerRadius = 8
+        cellColor?.layer.borderColor = selectedColor?.withAlphaComponent(0.3).cgColor
+        selectedColorCell = IndexPath(item: indexPathColor, section: 1)
+    }
+    
+    func setupEditTracker() {
+        if let editTracker = editTracker {
+            schedule = editTracker.schedule ?? []
+            textField.text = editTracker.name
+            selectedEmoji = editTracker.emoji ?? ""
+            selectedColor = editTracker.color ?? nil
+            createSchedule(schedule: schedule)
+            categorySubTitle = category?.name ?? ""
+            completedDaysBackgroundView.isHidden = false
+            updateScheduleButton()
+            updateCategoryButton()
+            updatePlusMinusButtons()
+        }
+    }
+    
+    private func updatePlusMinusButtons() {
+        if let editTracker = editTracker,
+           let editTrackerDate = editTrackerDate {
+            completedTrackers = trackerRecordStore.trackerRecords
+            let completedCount = completedTrackers.filter({ record in
+                record.id == editTracker.id
+            }).count
+            completedDaysLabel.text = String.localizedStringWithFormat(NSLocalizedString("numberOfDay", comment: "дней"), completedCount)
+            if completedTrackers.firstIndex(where: { record in
+                record.id == editTracker.id &&
+                record.date.yearMonthDayComponents == editTrackerDate.yearMonthDayComponents
+            }) != nil {
+                minusButton.isEnabled = true
+                plusButton.isEnabled = false
+            } else {
+                minusButton.isEnabled = false
+                plusButton.isEnabled = true
+            }
+        }
     }
     
     func updateCreateEventButton() {
@@ -292,29 +394,18 @@ class CreateEventViewController: UIViewController {
     }
     
     @objc func createEventButtonAction() {
+        
         var tracker: Tracker?
         if editTracker == nil {
-            if event == .regular {
-                tracker = Tracker(id: UUID(), name: textField.text ?? "", color: selectedColor, emoji: selectedEmoji, schedule: schedule, pinned: false)
-            } else {
+            if event != .regular {
                 schedule = WeekDay.allCases
-                tracker = Tracker(id: UUID(), name: textField.text ?? "", color: selectedColor, emoji: selectedEmoji, schedule: schedule, pinned: false)
             }
+            tracker = Tracker(id: UUID(), name: textField.text ?? "", color: selectedColor, emoji: selectedEmoji, schedule: schedule, pinned: false)
             guard let tracker = tracker else { return }
             delegate?.createTracker(tracker, categoryName: category?.name ?? "Без категории")
             
-        } else {
-            guard let editTracker = editTracker else { return }
-            
-            try? trackerStore.updateTracker(
-                newNameTracker: textField.text ?? "",
-                newEmoji: selectedEmoji,
-                newColor: selectedColor?.hexString ?? "",
-                newSchedule: schedule,
-                categoryName: category?.name ?? "Без категории",
-                editableTracker: editTracker
-            )
-        }
+    }
+
         dismiss(animated: true)
     }
     
@@ -340,8 +431,11 @@ class CreateEventViewController: UIViewController {
         
         view.addSubview(label)
         view.addSubview(scrollView)
+        scrollView.addSubview(completedDaysBackgroundView)
+        completedDaysBackgroundView.addSubview(plusButton)
+        completedDaysBackgroundView.addSubview(minusButton)
+        completedDaysBackgroundView.addSubview(completedDaysLabel)
         scrollView.addSubview(scrollViewContainer)
-        //   scrollViewContainer.addArrangedSubview(label)
         scrollViewContainer.addArrangedSubview(textField)
         scrollViewContainer.addArrangedSubview(errorLabel)
         scrollViewContainer.addArrangedSubview(createEventView)
@@ -381,6 +475,20 @@ class CreateEventViewController: UIViewController {
             scrollViewContainer.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             scrollViewContainer.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             scrollViewContainer.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            
+            completedDaysLabel.widthAnchor.constraint(equalToConstant: 120),
+            completedDaysLabel.centerXAnchor.constraint(equalTo: completedDaysBackgroundView.centerXAnchor),
+            completedDaysLabel.heightAnchor.constraint(equalToConstant: 38),
+            
+            plusButton.trailingAnchor.constraint(equalTo: completedDaysBackgroundView.trailingAnchor, constant: -78),
+            plusButton.widthAnchor.constraint(equalToConstant: 34),
+            plusButton.heightAnchor.constraint(equalToConstant: 34),
+            
+            minusButton.leadingAnchor.constraint(equalTo: completedDaysBackgroundView.leadingAnchor, constant: 78),
+            minusButton.widthAnchor.constraint(equalToConstant: 34),
+            minusButton.heightAnchor.constraint(equalToConstant: 34),
+            minusButton.topAnchor.constraint(equalTo: completedDaysBackgroundView.topAnchor),
+            
             
             textField.topAnchor.constraint(equalTo: scrollViewContainer.topAnchor, constant: 10),
             textField.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
@@ -506,15 +614,31 @@ class CreateEventViewController: UIViewController {
             heightAnchor?.constant = 32
         }
     }
+    
+    @objc func plusButtonAction() {
+        if let editTracker = editTracker,
+           let editTrackerDate = editTrackerDate {
+            let record = TrackerRecord(id: editTracker.id, date: editTrackerDate)
+            completedTrackers.append(record)
+            try? trackerRecordStore.addNewTrackerRecord(record)
+        }
+        updatePlusMinusButtons()
+    }
+    
+    @objc func minusButtonAction() {
+        if let editTracker = editTracker,
+           let editTrackerDate = editTrackerDate {
+            if let index = completedTrackers.firstIndex(where: { record in
+                record.id == editTracker.id &&
+                record.date.yearMonthDayComponents == editTrackerDate.yearMonthDayComponents
+            }) {
+                completedTrackers.remove(at: index)
+                try? trackerRecordStore.deleteTrackerRecord(with: editTracker.id, date: editTrackerDate)
+            }
+        }
+        updatePlusMinusButtons()
+    }
 }
-
-//extension UITextField {
-//    
-//    func indent(size:CGFloat) {
-//        self.leftView = UIView(frame: CGRect(x: self.frame.minX, y: self.frame.minY, width: size, height: self.frame.height))
-//        self.leftViewMode = .always
-//    }
-//}
 
 extension CreateEventViewController: UITextFieldDelegate {
     func textField(

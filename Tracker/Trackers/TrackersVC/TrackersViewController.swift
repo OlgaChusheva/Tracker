@@ -13,12 +13,13 @@ final class TrackersViewController: UIViewController {
     private let trackerRecordStore = TrackerRecordStore()
     private let trackerStore = TrackerStore()
     private let colors = Colors()
-    private let titleTrackers = NSLocalizedString("trackersTitle", tableName: "LocalizableString", comment: "Title Trackers")
-    private let filtersButtonTitle = NSLocalizedString("filters", tableName: "LocalizableString", comment: "Title Trackers")
-    private let stubTitle = NSLocalizedString("stubTitle", tableName: "LocalizableString", comment: "stubTitle")
-    private let nothingFound = NSLocalizedString("nothingFound", tableName: "LocalizableString", comment: "nothingFound")
-    private let search = NSLocalizedString("search", tableName: "LocalizableString", comment: "search")
-    private let cancel = NSLocalizedString("cancel", tableName: "LocalizableString", comment: "cancel")
+    private let titleTrackers = NSLocalizedString("trackersTitle", tableName: "Localizable", comment: "Title Trackers")
+    private let statistics = NSLocalizedString("statistics", tableName: "Localizable", comment: "statistics")
+    private let filtersButtonTitle = NSLocalizedString("filters", tableName: "Localizable", comment: "filters")
+    private let stubTitle = NSLocalizedString("stubTitle", tableName: "Localizable", comment: "stubTitle")
+    private let nothingFound = NSLocalizedString("nothingFound", tableName: "Localizable", comment: "nothingFound")
+    private let search = NSLocalizedString("search", tableName: "Localizable", comment: "search")
+    private let cancel = NSLocalizedString("cancel", tableName: "Localizable", comment: "cancel")
     
     
     //трекеры, которые были «выполнены» в выбранную дату
@@ -65,7 +66,7 @@ final class TrackersViewController: UIViewController {
         let datePicker = UIDatePicker()
         datePicker.tintColor = .ypBlue
         datePicker.layer.cornerRadius = 8
-        datePicker.overrideUserInterfaceStyle = .light
+        datePicker.backgroundColor = .ypGrayDate
         datePicker.layer.masksToBounds = true
         return datePicker
     }()
@@ -75,7 +76,7 @@ final class TrackersViewController: UIViewController {
         searchTextField.placeholder = search
         searchTextField.textColor = .ypBlack
         searchTextField.font = .systemFont(ofSize: 17)
-        searchTextField.backgroundColor = .ypGrayFind
+        searchTextField.backgroundColor = .ypTextField
         searchTextField.tintColor = .ypBlue
         searchTextField.layer.cornerRadius = 10
         searchTextField.indent(size: 30)
@@ -83,6 +84,13 @@ final class TrackersViewController: UIViewController {
         searchTextField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
         searchTextField.delegate = self
         return searchTextField
+    }()
+    
+    private lazy var loupeImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(named: "loupe")
+        return imageView
     }()
     
     private lazy var tapGesture: UITapGestureRecognizer = {
@@ -160,7 +168,6 @@ final class TrackersViewController: UIViewController {
             navBar.topItem?.setLeftBarButton(leftButton, animated: false)
             datePicker.preferredDatePickerStyle = .compact
             datePicker.datePickerMode = .date
-  //          datePicker.locale = Locale(identifier: "ru_RU")
             datePicker.accessibilityLabel = dateFormatter.string(from: datePicker.date)
             let rightButton = UIBarButtonItem(customView: datePicker)
             datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
@@ -206,6 +213,7 @@ final class TrackersViewController: UIViewController {
         view.addSubview(imageView)
         view.addSubview(label)
         view.addSubview(searchTextField)
+        searchTextField.addSubview(loupeImageView)
         view.addSubview(cancelEditingButton)
         view.addSubview(collectionView)
         view.addGestureRecognizer(tapGesture)
@@ -221,6 +229,11 @@ final class TrackersViewController: UIViewController {
             searchTextField.trailingAnchor.constraint(equalTo: cancelEditingButton.leadingAnchor, constant: -5),
             searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 7),
             searchTextField.heightAnchor.constraint(equalToConstant: 36),
+            
+            loupeImageView.heightAnchor.constraint(equalToConstant: 16),
+            loupeImageView.widthAnchor.constraint(equalToConstant: 16),
+            loupeImageView.leadingAnchor.constraint(equalTo: searchTextField.leadingAnchor, constant: 8),
+            loupeImageView.centerYAnchor.constraint(equalTo: searchTextField.centerYAnchor),
             
             cancelEditingButton.centerXAnchor.constraint(equalTo: searchTextField.centerXAnchor),
             cancelEditingButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
@@ -295,9 +308,6 @@ final class TrackersViewController: UIViewController {
                         newTrackers.append(tracker)
                     
                 }
-//                if  scheduleInts == [] {
-//                    newTrackers.append(tracker)
-                    
                 }
             }
             if newTrackers.count > 0 {

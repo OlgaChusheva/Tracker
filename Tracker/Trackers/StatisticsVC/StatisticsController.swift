@@ -7,7 +7,7 @@
 
 import UIKit
 
-class StatisticsController: UIViewController {
+final class StatisticsController: UIViewController {
     
     private let colors = Colors()
     private let trackerRecordStore = TrackerRecordStore()
@@ -16,7 +16,7 @@ class StatisticsController: UIViewController {
     private lazy var titleStatistics: UILabel = {
         let label = UILabel()
         label.textColor = .ypBlack
-        label.text = NSLocalizedString("statistic", tableName: "LocalizableString", comment: "statistics")
+        label.text = NSLocalizedString("statistics", tableName: "Localizable", comment: "statistics")
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
