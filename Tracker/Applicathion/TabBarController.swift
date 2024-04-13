@@ -24,7 +24,8 @@ final class TabBarController: UITabBarController {
         
         tabBar.backgroundColor = UIColor(named: "WhiteYP")
         tabBar.tintColor = UIColor(named: "BlueYP")
-        tabBar.barTintColor = UIColor(named: "GrayYP")
+        tabBar.barTintColor = UIColor(named: "BlackYP")
+        tabBar.unselectedItemTintColor = UIColor(named: "BlackYP")
         
         tabBar.layer.borderColor = UIColor(red:0.0/255.0, green:0.0/255.0, blue:0.0/255.0, alpha:0.2).cgColor
         tabBar.layer.borderWidth = 1

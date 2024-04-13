@@ -89,7 +89,7 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        scrollView.backgroundColor = .white
+        scrollView.backgroundColor = .whiteYP
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
@@ -106,7 +106,7 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var completedDaysBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteYP
         view.isHidden = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -146,7 +146,7 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var label: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .ypBlack
         label.text = event.titleText
         label.font = .systemFont(ofSize: 16)
         label.textAlignment = .center
@@ -167,6 +167,7 @@ final class CreateEventViewController: UIViewController {
         textField.delegate = self
         UITextField.appearance().clearButtonMode = .whileEditing
         textField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
+        textField.delegate = self
         return textField
     }()
     
@@ -218,6 +219,9 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var categoryButton: UIButton = {
         let button = UIButton(type: .system)
+        button.backgroundColor = .textField
+        button.layer.cornerRadius = 16
+   //     button.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         button.addTarget(self, action: #selector(categoryButtonAction), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -243,6 +247,9 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var scheduleButton: UIButton = {
         let button = UIButton(type: .system)
+        button.backgroundColor = .textField
+        button.layer.cornerRadius = 16
+        
         button.addTarget(self, action: #selector(scheduleButtonAction), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -250,7 +257,7 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var scheduleButtonTitle: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .ypBlack
         label.text = "Расписание"
         label.font = .systemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -280,7 +287,7 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var buttonBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteYP
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -321,7 +328,7 @@ final class CreateEventViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteYP
         addSubviews()
         setupLayout()
         setupEditTracker()
@@ -366,7 +373,7 @@ final class CreateEventViewController: UIViewController {
             let completedCount = completedTrackers.filter({ record in
                 record.id == editTracker.id
             }).count
-            completedDaysLabel.text = String.localizedStringWithFormat(NSLocalizedString("numberOfDay", comment: "дней"), completedCount)
+            completedDaysLabel.text = String.localizedStringWithFormat(NSLocalizedString("numberOfDay", tableName: "LocalizableDict", comment: "дней"), completedCount)
             if completedTrackers.firstIndex(where: { record in
                 record.id == editTracker.id &&
                 record.date.yearMonthDayComponents == editTrackerDate.yearMonthDayComponents
@@ -387,7 +394,7 @@ final class CreateEventViewController: UIViewController {
         }
         
         if createEventButton.isEnabled {
-            createEventButton.backgroundColor = .ypBlack
+            createEventButton.backgroundColor = .black
         } else {
             createEventButton.backgroundColor = .ypGray
         }
@@ -537,6 +544,8 @@ final class CreateEventViewController: UIViewController {
         ]
         
         if event == .regular {
+            categoryButton.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            scheduleButton.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
             constraints += [
                 separatorView.centerYAnchor.constraint(equalTo: createEventView.centerYAnchor),
                 separatorView.trailingAnchor.constraint(equalTo: createEventView.trailingAnchor, constant: -10),
@@ -596,11 +605,15 @@ final class CreateEventViewController: UIViewController {
         }
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
     @objc
     private func hideKeyboard() {
         self.view.endEditing(true)
     }
-    
     
     @objc func textFieldChanged() {
         updateCreateEventButton()
@@ -713,7 +726,7 @@ extension CreateEventViewController: UICollectionViewDelegate {
         if section == 0 {
             if selectedEmojiCell != nil {
                 collectionView.deselectItem(at: selectedEmojiCell!, animated: true)
-                collectionView.cellForItem(at: selectedEmojiCell!)?.backgroundColor = .white
+                collectionView.cellForItem(at: selectedEmojiCell!)?.backgroundColor = .whiteYP
             }
             cell?.backgroundColor = .ypLightGray
             selectedEmoji = cell?.emojiLabel.text ?? ""
@@ -734,7 +747,7 @@ extension CreateEventViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCollectionViewCell
         collectionView.deselectItem(at: indexPath, animated: true)
-        cell?.backgroundColor = .white
+        cell?.backgroundColor = .whiteYP
         cell?.layer.borderWidth = 0
         if indexPath.section == 0 {
             selectedEmoji = ""

@@ -27,8 +27,9 @@ final class ScheduleViewController: UIViewController {
     private lazy var enterButton: UIButton = {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
-        button.titleLabel?.textColor = .white
+        button.titleLabel?.textColor = .whiteYP
         button.backgroundColor = .ypBlack
+        button.setTitleColor(.whiteYP, for: .normal)
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(enterButtonAction), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -51,7 +52,7 @@ final class ScheduleViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteYP
         addSubviews()
         setupLayout()
     }

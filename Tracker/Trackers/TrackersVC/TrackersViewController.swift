@@ -131,14 +131,17 @@ final class TrackersViewController: UIViewController {
                                 forCellWithReuseIdentifier: TrackersCollectionViewCell.identifier)
         collectionView.register(TrackersSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TrackersSupplementaryView.identifier)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .whiteYP
         return collectionView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+     
         analyticsService.report(event: .open, params: ["Screen" : "Main"])
         print("Event: open")
         view.backgroundColor = colors.viewBackgroundColor
+        view.backgroundColor = .whiteYP
         setDayOfWeek()
         updateCategories(with: trackerCategoryStore.trackerCategories)
         completedTrackers = trackerRecordStore.trackerRecords
@@ -158,6 +161,8 @@ final class TrackersViewController: UIViewController {
         super.viewDidDisappear(animated)
         analyticsService.report(event: .close, params: ["Screen" : "Main"])
         print("Event: close")
+        self.view.backgroundColor = .whiteYP
+        
     }
     
     private func makeNavBar() {
@@ -503,9 +508,7 @@ extension TrackersViewController: CreateTrackerVCDelegate {
 }
 
 extension TrackersViewController {
-    
- 
-    
+
     @objc
     private func hideKeyboard() {
         self.view.endEditing(true)

@@ -77,7 +77,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         checkButton.addTarget(self, action: #selector(didTapCheckButton), for: .touchUpInside)
         checkButton.backgroundColor?.withAlphaComponent(1)
         
-        checkButton.tintColor = .white
+        checkButton.tintColor = .whiteYP
         checkButton.layer.cornerRadius = 20
         checkButton.translatesAutoresizingMaskIntoConstraints = false
         return checkButton
@@ -168,6 +168,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         
         checkButton.isEnabled = isEnabled
         
-        resultLabel.text = String.localizedStringWithFormat(NSLocalizedString("numberOfDay", comment: "Число дней"), completedCount)
+        resultLabel.text = String.localizedStringWithFormat(NSLocalizedString("numberOfDay", tableName: "LocalizableDict", comment: "Число дней"), completedCount)
     }
 }

@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class EditCategoryViewController: UIViewController {
+final class EditCategoryViewController: UIViewController, UITextFieldDelegate {
     
     var editableCategory: TrackerCategoryModel?
     
@@ -32,13 +32,22 @@ final class EditCategoryViewController: UIViewController {
         textField.text = editableCategory?.name
         UITextField.appearance().clearButtonMode = .whileEditing
         textField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
+        textField.delegate = self
         return textField
+    }()
+    
+    private lazy var tapGesture: UITapGestureRecognizer = {
+    let tapGesture = UITapGestureRecognizer()
+    tapGesture.addTarget(self, action: #selector(hideKeyboard))
+    tapGesture.cancelsTouchesInView = false
+    
+        return tapGesture
     }()
     
     private lazy var editCategoryButton: UIButton = {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
-        button.titleLabel?.textColor = .white
+        button.titleLabel?.textColor = .whiteYP
         button.backgroundColor = .ypGray
         button.isEnabled = true
         button.layer.cornerRadius = 16
@@ -51,7 +60,7 @@ final class EditCategoryViewController: UIViewController {
     
     @objc func textFieldChanged() {
         if textField.text != "" {
-            editCategoryButton.backgroundColor = .black
+            editCategoryButton.backgroundColor = .ypBlack
             editCategoryButton.isEnabled = true
         } else {
             editCategoryButton.backgroundColor = .gray
@@ -69,7 +78,7 @@ final class EditCategoryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteYP
         textField.becomeFirstResponder()
         addSubviews()
         setupLayout()
@@ -97,5 +106,15 @@ final class EditCategoryViewController: UIViewController {
             editCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             editCategoryButton.heightAnchor.constraint(equalToConstant: 60),
         ])
+    }
+    
+    @objc
+    private func hideKeyboard() {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

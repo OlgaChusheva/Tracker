@@ -142,7 +142,7 @@ final class StatisticsController: UIViewController {
     func updateCompletedTrackers() {
         completedTrackers = trackerRecordStore.trackerRecords
         resultTitle.text = "\(completedTrackers.count)"
-        resultSubTitle.text = String.localizedStringWithFormat(NSLocalizedString("trackerCompleted", comment: "Число дней"), completedTrackers.count)
+        resultSubTitle.text = String.localizedStringWithFormat(NSLocalizedString("trackerCompleted", tableName: "LocalizableDict", comment: "Число дней"), completedTrackers.count)
         imageNoStatistics.isHidden = completedTrackers.count > 0
         titleImageNoStatistics.isHidden = completedTrackers.count > 0
         completedTrackerView.isHidden = completedTrackers.count == 0
