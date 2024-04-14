@@ -221,7 +221,6 @@ final class CreateEventViewController: UIViewController {
         let button = UIButton(type: .system)
         button.backgroundColor = .textField
         button.layer.cornerRadius = 16
-   //     button.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         button.addTarget(self, action: #selector(categoryButtonAction), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
