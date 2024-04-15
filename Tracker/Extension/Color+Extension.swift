@@ -7,9 +7,15 @@
 
 import UIKit
 
+final class Colors {
+    var viewBackgroundColor = UIColor.systemBackground
+
+}
+
 extension UIColor {
     
     static var backgroundColor: UIColor { UIColor(named: "BackgroundColorYP") ?? UIColor.red }
+    static var ypTextField: UIColor { UIColor(named: "TextField") ?? UIColor.gray }
     static var ypLightGray: UIColor { UIColor(named: "LightGrayYP") ?? UIColor.gray }
     static var ypGray: UIColor { UIColor(named: "GrayYP") ?? UIColor.gray }
     static var ypRed: UIColor { UIColor(named: "RedYP") ?? UIColor.red }
@@ -17,6 +23,9 @@ extension UIColor {
     static var ypBlue: UIColor { UIColor(named: "BlueYP") ?? UIColor.blue }
     static var ypGrayFind: UIColor { UIColor(named: "FindYP") ?? UIColor.gray }
     static var ypGrayDate: UIColor { UIColor(named: "DateYP") ?? UIColor.gray }
+    var gradientColor1: UIColor { UIColor (named: "gradientColor1") ?? UIColor.red }
+    var gradientColor2: UIColor { UIColor(named: "gradientColor2") ?? UIColor.green }
+    var gradientColor3: UIColor { UIColor(named: "gradientColor3") ?? UIColor.blue }
     var color1: UIColor { UIColor(named: "Color1") ?? UIColor.red}
     var color2: UIColor { UIColor(named: "Color2") ?? UIColor.red }
     var color3: UIColor { UIColor(named: "Color3") ?? UIColor.red }

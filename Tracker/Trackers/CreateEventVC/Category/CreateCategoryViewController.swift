@@ -12,12 +12,12 @@ protocol CreateCategoryVCDelegate {
     func createdCategory(_ category: TrackerCategoryModel)
 }
 
-class CreateCategoryViewController: UIViewController {
+final class CreateCategoryViewController: UIViewController, UITextFieldDelegate {
     var delegate: CreateCategoryVCDelegate?
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .ypBlack
         label.text = "Новая категория"
         label.font = .systemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -37,13 +37,22 @@ class CreateCategoryViewController: UIViewController {
         
         UITextField.appearance().clearButtonMode = .whileEditing
         textField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
+        textField.delegate = self
         return textField
+    }()
+    
+    private lazy var tapGesture: UITapGestureRecognizer = {
+    let tapGesture = UITapGestureRecognizer()
+    tapGesture.addTarget(self, action: #selector(hideKeyboard))
+    tapGesture.cancelsTouchesInView = false
+    
+        return tapGesture
     }()
     
     private lazy var addCategoryButton: UIButton = {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
-        button.titleLabel?.textColor = .white
+        button.titleLabel?.textColor = .whiteYP
         button.backgroundColor = .gray
         button.isEnabled = true
         button.layer.cornerRadius = 16
@@ -53,6 +62,16 @@ class CreateCategoryViewController: UIViewController {
     }()
     
     private let trackerCategoryStore = TrackerCategoryStore()
+    
+    @objc
+    private func hideKeyboard() {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
     
     @objc func textFieldChanged() {
         if textField.text != "" {
@@ -75,7 +94,7 @@ class CreateCategoryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteYP
         addSubviews()
         setupLayout()
     }

@@ -7,8 +7,6 @@
 
 import Foundation
 import UIKit
-
-
     
     enum Tabs: Int {
         case trackers
@@ -21,14 +19,13 @@ final class TabBarController: UITabBarController {
         super.viewDidLoad()
         generateTabBar()
     }
-    
-    
-    
+   
     private func generateTabBar() {
         
         tabBar.backgroundColor = UIColor(named: "WhiteYP")
         tabBar.tintColor = UIColor(named: "BlueYP")
-        tabBar.barTintColor = UIColor(named: "GrayYP")
+        tabBar.barTintColor = UIColor(named: "BlackYP")
+        tabBar.unselectedItemTintColor = UIColor(named: "BlackYP")
         
         tabBar.layer.borderColor = UIColor(red:0.0/255.0, green:0.0/255.0, blue:0.0/255.0, alpha:0.2).cgColor
         tabBar.layer.borderWidth = 1
@@ -44,7 +41,7 @@ final class TabBarController: UITabBarController {
                                                      image: UIImage(named: "Trackers"),
                                                      tag: Tabs.trackers.rawValue)
       
-        statisticsNavigathion.tabBarItem = UITabBarItem(title: "Статистика",
+        statisticsNavigathion.tabBarItem = UITabBarItem(title: NSLocalizedString("statistics", tableName: "Localizable", comment: "statistics"),
                                                        image: UIImage(named: "Statistics"),
                                                        tag: Tabs.statistics.rawValue)
             let tabBarController = TabBarController()

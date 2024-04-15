@@ -8,8 +8,9 @@
 import Foundation
 import UIKit
 
-class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+ final class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
  
+    let analyticsService = AnalyticsService()
     private lazy var pages: [UIViewController] = {
         return [blueVC, redVC]
     }()

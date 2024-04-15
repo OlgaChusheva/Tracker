@@ -8,13 +8,13 @@
 import Foundation
 import UIKit
 
-class EmojiAndColorSupplementaryView: UICollectionReusableView {
+final class EmojiAndColorSupplementaryView: UICollectionReusableView {
     
     static let identifier = "header"
     
     var titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .ypBlack
         label.font = .boldSystemFont(ofSize: 19)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

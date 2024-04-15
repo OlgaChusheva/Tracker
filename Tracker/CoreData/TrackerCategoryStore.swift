@@ -45,6 +45,11 @@ final class TrackerCategoryStore: NSObject {
     convenience override init() {
         let context = CoreDataBase.shared.context
         try! self.init(context: context)
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            assertionFailure("TrackerCategoryStore fetch failed")
+        }
     }
     
      var trackerCategories: [TrackerCategoryModel] {
@@ -71,7 +76,6 @@ final class TrackerCategoryStore: NSObject {
         )
         controller.delegate = self
         self.fetchedResultsController = controller
-        try controller.performFetch()
     }
 
      func addNewTrackerCategory(_ trackerCategory: TrackerCategoryModel) throws {
@@ -86,6 +90,22 @@ final class TrackerCategoryStore: NSObject {
         }
         category?.nameCategory = newCategoryName
         try context.save()
+    }
+    
+    func category(_ categoryName: String) -> TrackerCategoryCoreData? {
+        return fetchedResultsController.fetchedObjects?.first {
+            $0.nameCategory == categoryName
+        }
+    }
+    
+    func category(forTracker tracker: Tracker) -> TrackerCategoryModel? {
+        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        request.returnsObjectsAsFaults = false
+        request.predicate = NSPredicate(format: "ANY trackers.id == %@", tracker.id.uuidString)
+        guard let trackerCategoriesCoreData = try? context.fetch(request) else { return nil }
+        guard let categories = try? trackerCategoriesCoreData.map({ try self.trackerCategory(from: $0)})
+        else { return nil }
+        return categories.first
     }
     
     func deleteCategory(_ categoryToDelete: TrackerCategoryModel) throws {
@@ -138,13 +158,16 @@ final class TrackerCategoryStore: NSObject {
             guard let id = trackerCoreData.id,
                   let nameTracker = trackerCoreData.nameTracker,
                   let color = trackerCoreData.color?.color,
-                  let emoji = trackerCoreData.emoji else { return nil }
+                  let emoji = trackerCoreData.emoji
+            else { return nil }
+            let pinned = trackerCoreData.pinned
             return Tracker(
                 id: id,
                 name: nameTracker,
                 color: color,
                 emoji: emoji,
-                schedule: trackerCoreData.schedule?.compactMap { WeekDay(rawValue: $0) }
+                schedule: trackerCoreData.schedule?.compactMap { WeekDay(rawValue: $0) },
+                pinned: pinned
             )
         } ?? []
         return TrackerCategoryModel(
@@ -185,27 +208,19 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(
         _ controller: NSFetchedResultsController<NSFetchRequestResult>)
     {
-        
-            guard
-            let insertedIndexes,
-            let deletedIndexes,
-            let updatedIndexes,
-            let movedIndexes
-        else { return }
-            
         delegate?.store(
             self,
             didUpdate: TrackerCategoryStoreUpdate(
-                insertedIndexes: insertedIndexes,
-                deletedIndexes: deletedIndexes,
-                updatedIndexes: updatedIndexes,
-                movedIndexes: movedIndexes
+                insertedIndexes: insertedIndexes ?? [],
+                deletedIndexes: deletedIndexes ?? [],
+                updatedIndexes: updatedIndexes ?? [],
+                movedIndexes: movedIndexes ?? []
             )
         )
-        self.insertedIndexes = nil
-        self.deletedIndexes = nil
-        self.updatedIndexes = nil
-        self.movedIndexes = nil
+        insertedIndexes = nil
+        deletedIndexes = nil
+        updatedIndexes = nil
+        movedIndexes = nil
     }
     
      func controller(
@@ -217,19 +232,32 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     ) {
         switch type {
         case .insert:
-            guard let indexPath = newIndexPath else { fatalError() }
+            guard let indexPath = newIndexPath else {
+                assertionFailure("insert indexPath - nil")
+                return
+            }
             insertedIndexes?.insert(indexPath.item)
         case .delete:
-            guard let indexPath = indexPath else { fatalError() }
+            guard let indexPath = indexPath else {
+                assertionFailure("delete indexPath - nil")
+                return
+            }
             deletedIndexes?.insert(indexPath.item)
         case .update:
-            guard let indexPath = indexPath else { fatalError() }
+            guard let indexPath = indexPath else {
+                assertionFailure("update indexPath - nil")
+                return
+            }
             updatedIndexes?.insert(indexPath.item)
         case .move:
-            guard let oldIndexPath = indexPath, let newIndexPath = newIndexPath else { fatalError() }
+            guard let oldIndexPath = indexPath, let newIndexPath = newIndexPath else {
+                assertionFailure("move indexPath - nil")
+                return
+            }
             movedIndexes?.insert(.init(oldIndex: oldIndexPath.item, newIndex: newIndexPath.item))
+
         @unknown default:
-            fatalError()
+            assertionFailure("unknown case")
         }
     }
 }
